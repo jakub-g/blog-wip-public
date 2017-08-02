@@ -206,3 +206,11 @@ The platform team in my company was *very* keen on migrating to TLS 1.2 (and imp
 the KitKat support), but we had to stop them. We have reevaluated this month, and we are finally
 planning to put it in place later this year.
 
+
+Part 2
+======
+
+_If you made it that far, you should check [part 2](https://gitlab.com/jakub-g/blog-wip-public/blob/master/https-pitfalls/https-pitfalls-part2.md),
+where I discuss: sending extraneous certificates; randomly sending wrong certificates; sending a certificate signed by a not widely-accepted root cert;
+and provide some links to helpful tools and external resources._
+
