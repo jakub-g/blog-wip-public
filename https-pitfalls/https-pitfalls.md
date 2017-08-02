@@ -289,6 +289,29 @@ However, when Comodo signs your certs with that cert, it also cross-signs it (at
 with an older cert that is available on older devices, so generally you don't have to worry about it.
 
 
+TLS 1.2 and Android KitKat
+==========================
+
+HTTPS deployment is a fine balance between security and backward compatibility.
+The current gold standard is TLS 1.2, but it's not supported by old operating systems and browsers
+(Internet Explorer on Windows XP, and very old Androids)
+
+Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
+While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
+there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
+as of July 2017, 17% of Android users use KitKat. However, you should check the same stats in Play Store console for the active users
+of your own app, and the stats there might be way different (as the variation between the countries in big).
+
+The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
+it's by default switched off, and while some vendors do support it, but many do not.
+(There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
+of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
+
+Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
+double check your user base statistics before, to avoid recklessly cutting out a big portion
+of the market from your services.
+
+
 Assumming your once-configured HTTPS will work forever
 =======================================================
 
@@ -309,28 +332,6 @@ Avoid using certificates from certificate authorities that have a long track of 
 **Keep in mind that each HTTPS cert renewal is a potentially breaking change, and treat it as such - put the QA in the loop for a quick sanity.**
 
 Use Chrome Canary and Firefox Nightly to learn about breaking changes before they reach the wider audience.
-
-TLS 1.2 and Android KitKat
---------------------------
-
-Finally, HTTPS deployment is a fine balance between security and backward compatibility.
-
-Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
-Modern TLS versions do not support anymore IE6-8 on Windows XP, and very old Androids.
-
-While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
-there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
-as of July 2017, 17% of Android users use KitKat. However, you should check the same stats in Play Store console for the active users
-of your own app, and the stats there might be way different (as the variation between the countries in big).
-
-The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
-it's by default switched off, and while some vendors do support it, but many do not.
-(There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
-of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
-
-Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
-double check your user base statistics before, to avoid recklessly cutting out a big portion
-of the market from your services.
 
 
 Additional Resources
