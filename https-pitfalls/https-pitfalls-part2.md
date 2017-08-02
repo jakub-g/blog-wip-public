@@ -22,7 +22,7 @@ by sending unnecessary data at this stage, you're increasing initial render time
 
 **Every compliant browser will ignore a self-signed root cert at the end of the chain:**
 if the browser has that root cert in its store, the TLS validation will succeed,
-and if it doesn't, it will fail.
+and if it doesn't have that cert, it will fail.
 Contrary to intermediate certs, which for robustness should always be sent,
 there's no point of sending the root cert.
 
