@@ -94,7 +94,7 @@ To verify the website's cert, the browser needs to have *a full chain of certifi
 1. either server sends all the intermediate certs,
 2. or the browser needs to get them from *somewhere*.
 
-The screenshot above shows GitHub properly sending the intermediate cert. **But what happens in the second case? It's implementation-specific, depends on the browser and platform:**
+The screenshot above shows GitHub properly sending the intermediate cert. **But what happens in the other case? It's implementation-specific, depends on the browser and platform:**
 
 - if the browser happens to have an intermediate cert cached locally, because some other website that the user has visited served it, it will be reused;
 - if the intermediate cert is not cached, some browsers will fetch it, but some won't; **in particular, Android WebView and all versions of Firefox do not fetch any missing certs!**
