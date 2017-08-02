@@ -17,7 +17,8 @@ and are an equivalent of sending unoptimized JPEGs full of metadata.
 ![Root cert sent by server](root-cert-sent-by-server.png)
 
 Since a TLS handshake is the very first thing happening when connecting to a domain over HTTPS,
-by sending unnecessary data at this stage, you may slightly increase initial render time for users with poor connections.
+by sending unnecessary data at this stage, you're increasing initial render time for all users
+(particularly the ones with poor connections and far away from your edge servers).
 
 **Every compliant browser will ignore a self-signed root cert at the end of the chain:**
 if the browser has that root cert in its store, the TLS validation will succeed,
