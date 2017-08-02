@@ -299,7 +299,7 @@ The current gold standard is TLS 1.2, but it's not supported by old operating sy
 Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
 While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
 there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
-as of July 2017, 17% of Android users use KitKat. However, you should check the same stats in Play Store console for the active users
+as of July 2017, **17% of Android users use KitKat**. However, you should check the same stats in Play Store console for the active users
 of your own app, and the stats there might be way different (as the variation between the countries is big).
 
 The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
@@ -310,6 +310,10 @@ of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory shou
 Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
 **double check your user base statistics before**, to avoid recklessly cutting out a big portion
 of the market from your services.
+
+The platform team in my company was *very* keen on migrating to TLS 1.2 (and implicitly dropping
+the KitKat support), but we had to stop them. We have reevaluated this month, and we are finally
+planning to put it in place later this year.
 
 
 Assumming your once-configured HTTPS will work forever
