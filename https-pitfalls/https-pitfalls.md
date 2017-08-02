@@ -1,5 +1,5 @@
-Real-world HTTPS deployment pitfalls
-====================================
+Real-world HTTPS deployment pitfalls (part 1)
+============================================
 
 ...or one year from life of a web/app developer, seeing broken HTTPS in the wild
 
