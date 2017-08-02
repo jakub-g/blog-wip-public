@@ -310,11 +310,28 @@ Avoid using certificates from certificate authorities that have a long track of 
 
 Use Chrome Canary and Firefox Nightly to learn about breaking changes before they reach the wider audience.
 
+TLS 1.2 and Android KitKat
+--------------------------
+
 Finally, HTTPS deployment is a fine balance between security and backward compatibility.
-Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else. Most of the SSL/TLS implementation in 2017 do not support anymore IE6-8 on Windows XP, and very old Androids.
-**However, many users still have Android KitKat devices**, which are a bit behind in terms of availability of modern crypto,
-so **if you don't want to lose this still significant part of market, double check that your HTTPS works on KitKat.**
-The platform security team in your company will try to improve security whenever given an occasion, but sometimes you will have to stop them due to business constraints.
+
+Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
+Modern TLS versions do not support anymore IE6-8 on Windows XP, and very old Androids.
+
+While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
+there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
+as of July 2017, 17% of Android users use KitKat. However, you should check the same stats in Play Store console for the active users
+of your own app, and the stats there might be way different (as the variation between the countries in big).
+
+The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
+it's by default switched off, and while some vendors do support it, but many do not.
+(There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
+of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
+
+Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
+double check your user base statistics before, to avoid recklessly cutting out a big portion
+of the market from your services.
+
 
 Additional Resources
 ====================
