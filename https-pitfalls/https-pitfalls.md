@@ -99,7 +99,7 @@ The screenshot above shows GitHub properly sending the intermediate cert. **But 
 - if the browser happens to have an intermediate cert cached locally, because some other website that the user has visited served it, it will be reused;
 - if the intermediate cert is not cached, some browsers will fetch it, but some won't; **in particular, Android WebView and all versions of Firefox do not fetch any missing certs!**
 
-See an example of a misconfigured server below:
+See an example of [a misconfigured server](https://incomplete-chain.badssl.com/) below:
 
 ![Missing intermediate certificates](extra-downloads.png)
 
