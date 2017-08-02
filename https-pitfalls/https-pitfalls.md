@@ -177,6 +177,36 @@ See also:
 - [Firefox bug: Fetch missing intermediate certs](https://bugzilla.mozilla.org/show_bug.cgi?id=399324)
 
 
+TLS 1.2 and Android KitKat
+==========================
+
+_TL;DR: make sure you don't lose dozens of thousands of users before you roll out TLS 1.2_
+
+HTTPS deployment is a fine balance between security and backward compatibility.
+The current gold standard is TLS 1.2, but it's not supported by old operating systems and browsers
+(Internet Explorer on Windows XP, and very old Androids)
+
+Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
+While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
+there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
+as of July 2017, **17% of Android users use KitKat**. However, you should check the stats in Play Store console
+for the active users of your own app, and the stats there might be way different
+(as the variation between the countries is big).
+
+The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
+**it's by default switched off**, and while some vendors do support it, but many do not.
+(There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
+of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
+
+Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
+**double check your user base statistics before**, to avoid recklessly cutting out a big portion
+of the market from your services.
+
+The platform team in my company was *very* keen on migrating to TLS 1.2 (and implicitly dropping
+the KitKat support), but we had to stop them. We have reevaluated this month, and we are finally
+planning to put it in place later this year.
+
+
 Extraneous certificates
 =======================
 
@@ -287,33 +317,6 @@ it was immediately picked up by the browser vendors on day one after issuance).
 **This particular cert is known to not be present in Android < 5.1.**, nor in Firefox < 36.
 However, when Comodo signs your certs with that cert, it also cross-signs it (at least for now)
 with an older cert that is available on older devices, so generally you don't have to worry about it.
-
-
-TLS 1.2 and Android KitKat
-==========================
-
-HTTPS deployment is a fine balance between security and backward compatibility.
-The current gold standard is TLS 1.2, but it's not supported by old operating systems and browsers
-(Internet Explorer on Windows XP, and very old Androids)
-
-Supporting outdated browsers means supporting insecure crypto and lowering security for everyone else.
-While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
-there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
-as of July 2017, **17% of Android users use KitKat**. However, you should check the same stats in Play Store console for the active users
-of your own app, and the stats there might be way different (as the variation between the countries is big).
-
-The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
-**it's by default switched off**, and while some vendors do support it, but many do not.
-(There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
-of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
-
-Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
-**double check your user base statistics before**, to avoid recklessly cutting out a big portion
-of the market from your services.
-
-The platform team in my company was *very* keen on migrating to TLS 1.2 (and implicitly dropping
-the KitKat support), but we had to stop them. We have reevaluated this month, and we are finally
-planning to put it in place later this year.
 
 
 Assumming your once-configured HTTPS will work forever
