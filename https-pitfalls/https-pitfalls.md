@@ -7,7 +7,7 @@ All the things written below actually happened to my team, other teams at my com
 
 -------
 
-*Who is this post for:* web & app developers, devops, sysadmins
+*Who is this post for:* web & app developers, devops, sysadmins; particularly if you're working in a big company and roll out HTTPS on your own
 
 *Technical difficulty:* low / intermediate (you know what is HTTPS, a CA, a certificate)
 
