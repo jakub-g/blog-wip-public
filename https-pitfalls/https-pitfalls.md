@@ -300,7 +300,7 @@ Supporting outdated browsers means supporting insecure crypto and lowering secur
 While most of the Android developers have stopped supporting pre-KitKat devices long time ago,
 there's still a significant market share of KitKat (Android 4.4). According to [Android dashboard](https://developer.android.com/about/dashboards/index.html),
 as of July 2017, 17% of Android users use KitKat. However, you should check the same stats in Play Store console for the active users
-of your own app, and the stats there might be way different (as the variation between the countries in big).
+of your own app, and the stats there might be way different (as the variation between the countries is big).
 
 The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
 it's by default switched off, and while some vendors do support it, but many do not.
