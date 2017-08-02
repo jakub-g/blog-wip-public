@@ -303,12 +303,12 @@ as of July 2017, 17% of Android users use KitKat. However, you should check the 
 of your own app, and the stats there might be way different (as the variation between the countries is big).
 
 The interesting thing about KitKat is that while it has the capability to support TLS 1.2,
-it's by default switched off, and while some vendors do support it, but many do not.
+**it's by default switched off**, and while some vendors do support it, but many do not.
 (There are even [reports](https://github.com/square/okhttp/issues/2372#issuecomment-244807676)
 of Samsung devices with Android 5.0 not supporting TLS 1.2, which in theory should not happen).
 
 Due to PCI-DSS compliance, you might be forced to migrate your server to TLS 1.2, but you should
-double check your user base statistics before, to avoid recklessly cutting out a big portion
+**double check your user base statistics before**, to avoid recklessly cutting out a big portion
 of the market from your services.
 
 
