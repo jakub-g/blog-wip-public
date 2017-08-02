@@ -1,8 +1,8 @@
 Real-world HTTPS deployment pitfalls (part 2)
 ============================================
 
-This is part 2 of the blog post.
-For part 1, see [here](https://gitlab.com/jakub-g/blog-wip-public/blob/master/https-pitfalls/https-pitfalls.md)
+_This is part 2 of the blog post.
+For part 1, see [here](https://gitlab.com/jakub-g/blog-wip-public/blob/master/https-pitfalls/https-pitfalls.md)._
 
 Extraneous certificates
 =======================
