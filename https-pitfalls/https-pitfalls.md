@@ -71,70 +71,6 @@ https://gist.github.com/ericlaw1979/678ed408075da213f742) to highlight HTTPS ses
 Don't wait to renew the certificate on the last possible day (in particular when it expires on Sunday!) to avoid putting unnecessary stress on your team.
 
 
-Using HSTS too aggressively
-===========================
-
-*TL;DR: only roll out HSTS when everything else's been checked and working well. Serve small `max-age` initially and increase as you gain confidence - or prepare to serve `max-age=0` in case of problems.*
-
-[HSTS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security) is a very useful security header which tells the browser to "remember" to always load all URLs from a given domain over HTTPS, even if HTTP URLs are encountered, for a given period of time described by `max-age` field in the header value. In other words, it prevents you from visiting unsecured HTTP pages.
-
-**Usually this is good, but obviously not when HTTPS version is not working properly,** and the user really wants to see the HTTP version.
-
-_Story time:_ We have an on-site JIRA instance in my company; put in place several years ago over HTTP, but work began lately on serving JIRA and everything else over HTTPS.
-
-At some point, the implementation team enabled an http->https redirect and an HSTS header. For some reason though, it turned out some parts of the page were not working over https (not that obvious to diagnose for the end user), so the force-https config was disabled, and the recommendation from JIRA support team was to use http URLs.
-
-But, with HSTS it is not that easy: if you ever visited https version before, when visiting http URL later, you were redirected back to https page (the whole point of HSTS after all!), and  clearing standard browsing data didn't help.
-
-**There are two solutions if your users get trapped by that problem:**
-
-- You could serve `max-age=0` value for HSTS header which tells the browser to discard all HSTS data it has for the serving domain *(but this is taken into account by the browser only when served over HTTPS - as any other HSTS header value)*.
-- Users may clear HSTS cache of the browser. Not very easy to do, and not user friendly; typically hidden in browser internals, for example: `chrome://net-internals/#hsts` in Chrome.
-
-**Obviously, the best solution is to be cautious and only implement HSTS when everything else was verified; also, put a small `max-age` (a few hours, a few days) first, and gradually increase when no problems are found.**
-
-Read more:
-
-- [Blog post on HSTS on Qualys Blog](https://blog.qualys.com/securitylabs/2016/03/28/the-importance-of-a-proper-http-strict-transport-security-implementation-on-your-web-server)
-
-
-Forgetting about www/nowww when deploying HTTPS, CDN, or security proxy
-======================================================================
-
-*TL;DR: do not forget about nowww. Make sure it works over http and redirects to https.*
-
-Typically, your website has a canonical URL of `www.example.com` or `example.com`, so you have 2 entry points. Most likely you serve a redirect from one to the other, to avoid duplicated content.
-
-However with HTTPS in the game, each of the two is accessible either via http or https, _so you have 4 entry points total_.
-
-If you forget about your nowww domain, you might end up in the following situation:
-
-1. User types "example.com" in URL bar
-2. The server responds with a redirect to "https://example.com"
-3. Your HTTPS cert is not valid for nowww domain -> **scary warning, user runs away.**
-
-Another thing that could happen is that your traffic to nowww domain won't be resolved at all and user will think that your page is down.
-
-The problem is so prevalent that modern browsers have some built-in magic to probe www domain in case of nowww not working, but as with any error recovery mechanism, it's better to not rely on it.
-
-Actions:
-
-1) **Make sure to choose one canonical entry point** (say, `https://www.example.com`) and put redirects in place in your webserver's config for the 3 remaining ones:
-
-- http://www.example.com -> https://www.example.com
-- http://example.com -> https://www.example.com
-- https://example.com -> https://www.example.com
-
-(You might want to write a simple bot that checks all of this each night and alerts you if a redirection stops working. Subsequent configuration changes, perhaps done by external teams -- not unheard of in corporate environments -- might break that redirection without anyone noticing.)
-
-2) Since `example.com` and `www.example.com` are different origins, a regular TLS cert with just one explicit domain name won't work for both. **You need a cert with SAN (Subject Alternative Name) matching both, for example: `*.example.com example.com` or `www.example.com example.com`**
-
-3) SEO tip: Generate `<link rel="canonical" href="https://...">` in the `<head>` of your HTML responses to make deduplication work easier for web crawlers.
-
-See also the following support entries from Google Webmasters:
-
-- [Google Webmasters guidelines: canonical URLs](https://support.google.com/webmasters/answer/139066?hl=en)
-- [Google Webmasters guidelines: preferred domain](https://support.google.com/webmasters/answer/44231?hl=en)
 
 Missing intermediate certificates
 =================================
@@ -205,6 +141,72 @@ of the market from your services.
 The platform team in my company was *very* keen on migrating to TLS 1.2 (and implicitly dropping
 the KitKat support), but we had to stop them. We have reevaluated this month, and we are finally
 planning to put it in place later this year.
+
+
+Using HSTS too aggressively
+===========================
+
+*TL;DR: only roll out HSTS when everything else's been checked and working well. Serve small `max-age` initially and increase as you gain confidence - or prepare to serve `max-age=0` in case of problems.*
+
+[HSTS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security) is a very useful security header which tells the browser to "remember" to always load all URLs from a given domain over HTTPS, even if HTTP URLs are encountered, for a given period of time described by `max-age` field in the header value. In other words, it prevents you from visiting unsecured HTTP pages.
+
+**Usually this is good, but obviously not when HTTPS version is not working properly,** and the user really wants to see the HTTP version.
+
+_Story time:_ We have an on-site JIRA instance in my company; put in place several years ago over HTTP, but work began lately on serving JIRA and everything else over HTTPS.
+
+At some point, the implementation team enabled an http->https redirect and an HSTS header. For some reason though, it turned out some parts of the page were not working over https (not that obvious to diagnose for the end user), so the force-https config was disabled, and the recommendation from JIRA support team was to use http URLs.
+
+But, with HSTS it is not that easy: if you ever visited https version before, when visiting http URL later, you were redirected back to https page (the whole point of HSTS after all!), and  clearing standard browsing data didn't help.
+
+**There are two solutions if your users get trapped by that problem:**
+
+- You could serve `max-age=0` value for HSTS header which tells the browser to discard all HSTS data it has for the serving domain *(but this is taken into account by the browser only when served over HTTPS - as any other HSTS header value)*.
+- Users may clear HSTS cache of the browser. Not very easy to do, and not user friendly; typically hidden in browser internals, for example: `chrome://net-internals/#hsts` in Chrome.
+
+**Obviously, the best solution is to be cautious and only implement HSTS when everything else was verified; also, put a small `max-age` (a few hours, a few days) first, and gradually increase when no problems are found.**
+
+Read more:
+
+- [Blog post on HSTS on Qualys Blog](https://blog.qualys.com/securitylabs/2016/03/28/the-importance-of-a-proper-http-strict-transport-security-implementation-on-your-web-server)
+
+
+Forgetting about www/nowww when deploying HTTPS, CDN, or security proxy
+======================================================================
+
+*TL;DR: do not forget about nowww. Make sure it works over http and redirects to https.*
+
+Typically, your website has a canonical URL of `www.example.com` or `example.com`, so you have 2 entry points. Most likely you serve a redirect from one to the other, to avoid duplicated content.
+
+However with HTTPS in the game, each of the two is accessible either via http or https, _so you have 4 entry points total_.
+
+If you forget about your nowww domain, you might end up in the following situation:
+
+1. User types "example.com" in URL bar
+2. The server responds with a redirect to "https://example.com"
+3. Your HTTPS cert is not valid for nowww domain -> **scary warning, user runs away.**
+
+Another thing that could happen is that your traffic to nowww domain won't be resolved at all and user will think that your page is down.
+
+The problem is so prevalent that modern browsers have some built-in magic to probe www domain in case of nowww not working, but as with any error recovery mechanism, it's better to not rely on it.
+
+Actions:
+
+1) **Make sure to choose one canonical entry point** (say, `https://www.example.com`) and put redirects in place in your webserver's config for the 3 remaining ones:
+
+- http://www.example.com -> https://www.example.com
+- http://example.com -> https://www.example.com
+- https://example.com -> https://www.example.com
+
+(You might want to write a simple bot that checks all of this each night and alerts you if a redirection stops working. Subsequent configuration changes, perhaps done by external teams -- not unheard of in corporate environments -- might break that redirection without anyone noticing.)
+
+2) Since `example.com` and `www.example.com` are different origins, a regular TLS cert with just one explicit domain name won't work for both. **You need a cert with SAN (Subject Alternative Name) matching both, for example: `*.example.com example.com` or `www.example.com example.com`**
+
+3) SEO tip: Generate `<link rel="canonical" href="https://...">` in the `<head>` of your HTML responses to make deduplication work easier for web crawlers.
+
+See also the following support entries from Google Webmasters:
+
+- [Google Webmasters guidelines: canonical URLs](https://support.google.com/webmasters/answer/139066?hl=en)
+- [Google Webmasters guidelines: preferred domain](https://support.google.com/webmasters/answer/44231?hl=en)
 
 
 Part 2
