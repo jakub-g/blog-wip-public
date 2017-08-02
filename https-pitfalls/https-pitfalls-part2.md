@@ -3,8 +3,8 @@ Real-world HTTPS deployment pitfalls (part 2)
 
 _This is part 2 of the blog post.
 For part 1, see [here](https://gitlab.com/jakub-g/blog-wip-public/blob/master/https-pitfalls/https-pitfalls.md),
-where I discuss: how not to overlook expiring cert, how not to shoot yourself in foot with HSTS, a case of forgotten "nowww",
-why you should always send intermediate certificates, and TLS 1.2 migration if you support Android KitKat._
+where I discuss: how not to overlook an expiring cert; how not to shoot yourself in foot with HSTS; a case of forgotten "nowww";
+why you should always send intermediate certificates; and TLS 1.2 migration considerations if you support Android KitKat._
 
 Extraneous certificates
 =======================
