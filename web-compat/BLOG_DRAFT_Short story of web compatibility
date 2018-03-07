@@ -1,0 +1,162 @@
+Short story of web compatibility
+================================
+
+_Main audience for this post: junior web developers of 2018 (but not only)_
+
+One thing you learn as you gain experience in software development
+is that things are _almost always more complicated than they seem at the first glance_.
+
+This is true in any project, but even more when working on a platform which has
+to maintain strong backward compatibility.
+
+But normally, you only have to keep the compatibility _with just yourself_.
+However, a web browser is a special kind of software that sometimes has to keep
+the compatibility with its older self _and_ other unrelated web browsers (sometimes
+even reproduce their bugs), _and_ even with outdated JavaScript libraries.
+
+(And it can even get worse, when you need to, for example, balance compatibility and security. This is always a huge trade-off to make. Anyway, I digress.)
+
+I got inspired by this tweet by Domenic:
+
+https://twitter.com/domenic/status/971290346297716737
+
+and I've decided to write up a bit on some things that I know, and do more research on the things I didn't know.
+
+document.all
+============
+
+Long, long time ago, there was a cool Norwegian desktop browser called Opera.
+(There's still Opera browser on the market, delivered by the same Opera Software,
+but it's basically an entirely different browser, rebuilt from scratch on top of Chromium, using Blink rendering engine, compared to the previous one, using proprietary Presto engine.)
+It was never huge, but it had a lot of loyal users. It was actually a paid product first, and then an adware.
+
+http://www.markschenk.com/various/o8intro/screenshots/searchesinbackground.png
+
+Opera/Presto was a very innovative browser, the first major browser to have tabs. It also had user-definable mouse gestures, built-in password manager with click-to-prefill feature...
+
+The main problems of Opera were 1) the IE, and 2) that it was _too much_ standards compliant.
+
+In the early 2000s, most of the pages in the internet were "working best in IE", as it was the dominant browser, of the time due to Microsoft monopolistic practices, so people were testing their pages basically only in IE. Since IE was 1) buggy and 2) using a lot of proprietary non-standard features in HTML/JavaScript/CSS, people would write bad code which would nonetheless render fine in IE, whereas it would not render well in Opera, mainly because it was parsing HTML differently in case of malformed syntax, unmatched opening/closing tags etc.
+
+The other problem were the proprietary JavaScript APIs. For example, [this was a common piece of code a decade ago to make things work cross-browser](
+https://www.nczonline.net/blog/2009/12/29/feature-detection-is-not-browser-detection/):
+
+    if (document.getElementById) {  // standards-compliant
+        element = document.getElementById(id);
+    } else if (document.all) {      // old IE
+        element = document.all[id];
+    } else if (document.layers) {   // old Netscape
+        element = document.layers[id];
+    }
+
+However, what if the developer just coded the whole thing with only IE in mind?
+
+    element = document.all[id];
+
+Well, to survive the wild west of early 2000 websites, Opera implemented some of non-standard IE-specific APIs. For example, it implemented `document.all`. So the code above would actually work in Opera! (Opera also had a dropdown with a lot different predefined "user agent" strings,
+so that in case the page didn't render well for the user, they could pretend they were using IE6 or IE5.5 or Netscape and try their luck again. Those were _not_ fun times.)
+
+However, here comes another problem. Other developers would have written code like this instead:
+
+    var isIE = !!document.all;
+    if (isIE) {
+        // do some crazy IE-specific hacks
+    }
+
+_(In case you're stuck on `!!`, it is a double boolean negation, which is a common pattern to convert any JavaScript value to a boolean; in other words, a way to check if a value is falsy or not; see also [falsy on MDN](https://developer.mozilla.org/en-US/docs/Glossary/Falsy))_
+
+In this scenario, the developer cares about cross-compatibility, but executing a piece of
+JS guarded by an `if` could totally break the page layout with the only-for-IE hacks.
+Can the two things be reconciled?
+
+Turns out the answer is: yes, because `document.all` is a _host object_.
+Some objects in global JS namespace (like `Array`) are _native objects_, and their behavior is well-defined in EcmaScript speficication. But the JS executions environments (browsers, nodejs...) can expose their own additional objects, and they are free to seemingly break the JavaScript language rules and common sense.
+
+[Quoting kangax](http://perfectionkills.com/whats-wrong-with-extending-the-dom/):
+
+>By specification (ECMA-262 3rd. ed), host objects are allowed to do things, no other objects can even dream of. To quote relevant section [8.6.2]:
+
+>> Host objects may implement these internal methods with any implementation-dependent behaviour, or it may be that a host object implements only some internal methods and not others.
+
+> The internal methods specification talks about are [[Get]], [[Put]], [[Delete]], etc. Note how it says that internal methods behavior is implementation-dependent. What this means is that it's absolutely normal for host object to throw error on invocation of, say, [[Get]] method. And unfortunately, this isn't just a theory.
+
+Due to that, Opera engineers have shipped an implementation of `document.all` that was able to provide best of both worlds:
+
+    document.all[id] // returns a DOM element
+    !!document.all   // `false`
+
+Those times are long gone but now this [now even IE11 matches the sneaky behavior of Opera](https://www.nczonline.net/blog/2013/07/02/internet-explorer-11-dont-call-me-ie/) - in fact it's obliged to, because this behavior [made its way to the HTML5 standard](https://html.spec.whatwg.org/multipage/obsolete.html#dom-document-all). Welcome to the jungle.
+
+http://perfectionkills.com/extending-native-builtins/
+
+document.documentMode
+=====================
+
+useragent string
+===============
+
+https://webaim.org/blog/user-agent-string-history/
+https://www.nczonline.net/blog/2010/01/12/history-of-the-user-agent-string/
+
+Opera has modified script or content on www.google.com (PATCH-1269, Hide Chrome ad from Google pages). See browser.js for details
+
+
+      'PATCH-1218': {
+        description: 'pretend to be Chrome on lufthansa.com',
+        isMatching: () => isPartOfDomain('lufthansa.com'),
+        apply: () => hideOperaUserAgent(),
+      },
+
+      'PATCH-1227': {
+        description: 'Mock as Chrome on popular American Bank Sites',
+        isMatching: () => isPartOfDomain('bankofamerica.com') ||
+            isPartOfDomain('chase.com'),
+        apply: () => hideOperaUserAgent(),
+      },
+      ...
+      'PATCH-1263': {
+        description: 'hide Unsupported Browser dialog on clarks.co.uk',
+        isMatching: () => isPartOfDomain('clarks.co.uk'),
+        apply: () => {
+          addCssToDocument('#unsupportedBrowser {visibility:hidden}');
+        },
+      },
+      ...
+      'PATCH-1286': {
+        description: 'Hide notification about unsupported browser',
+        isMatching: () => isPartOfDomain('adidas.com'),
+        apply: () => {
+          addCssToDocument('#badBrowserModal {display:none !important}');
+        },
+      },
+      'PATCH-1287': {
+        description: 'Pretend to be Chrome on Amazon Alexa',
+        isMatching: () => isPartOfDomain('alexa.amazon.com'),
+        apply: () => hideOperaUserAgent(),
+      },
+
+Double jackpot: document.documentMode + useargent with webcontrol useragent
+====================
+
+https://blogs.msdn.microsoft.com/patricka/2015/01/12/controlling-webbrowser-control-compatibility/
+
+
+HTTP `Referer`
+=============
+
+Weird compat problems don't always come from the web browser though.
+
+Long, long time ago, someone writing HTTP spec misspelled `Referrer` as `Referer` for the name of [an HTTP request header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer).
+
+HTTP clients implemented `Referer` and there was no way back. The header is still called like that in 2018 and it will be misspelled forever.
+
+Note though that a JavaScript API has a correct name (`document.referrer`)
+
+
+
+
+
+
+
+
+https://github.com/getify/You-Dont-Know-JS/blob/master/this%20%26%20object%20prototypes/ch5.md
