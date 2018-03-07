@@ -49,9 +49,11 @@ side?
 I was confused by that, so I reached to Ivan Ristić from SSL Labs who explained (thanks!)
 that SSL Labs does multiple connections during the test, and collects all the
 server certs it encounters. The server _can only return one **server certificate**
-at a time_ (though it may return a different one on each connection attempt) --
-and in addition, it may return a "bag of certs" containing intermediate certs,
+at a time_, and in addition, it may return a "bag of certs" containing intermediate certs,
 to help the client to perform the validation of the chain of trust.
+However, it may return a different one on each connection attempt -- this
+is handy if you have lots of servers and load balancers: you don't have to keep
+all of them in sync with the same server cert.
 
 To inspect the issue more closely, I enabled Fiddler, configured it temporarily to ignore certificate
 errors, and put a few lines of Fiddler script to log the details of the certificate
@@ -88,9 +90,9 @@ almost randomly with 50-50 chance, as you can see in the screenshot below:
 
 ![Random certificates returned by Azure - Fiddler](fiddler-azure.png)
 
-It turned out the Azure deployment of our partner was misconfigured and the server
-was sometimes wrongly sending a server certificate of Azure, instead of that of the appropriate customer domain
-(unfortunately, I don't know more details of what kind of misconfiguration it was).
+It turned out that Azure deployment of our partner was misconfigured and indeed sometimes
+the server was wrongly sending a server certificate of Azure, instead of that of the appropriate customer domain
+(unfortunately, I don't know more details on why that was the case).
 
 
 Serving certificate signed only by a niche or a very new root cert
@@ -106,11 +108,11 @@ Typically the leaf certs are short-lived (months/years), and root certs are long
 
 How can you verify cert's details? The easiest way is to obtain its fingerprint (hash)...
 
-![Root cert sent by server](very-new-root-cert.png)
+![Checking details of a root certificate](very-new-root-cert.png)
 
 ...and then use it in your favorite search engine, which will lead you to a [Censys cert viewer](https://www.censys.io/certificates/52f0e1c4e58ec629291b60317f074671b85d7ea80d5b07273463534b32b40234):
 
-![Root cert sent by server](comodo-2010-cert.png)
+![Checking details of a root certificate](comodo-2010-cert.png)
 
 The example above is a popular Comodo cert issued in 2010. (Note this does not mean
 it was immediately picked up by the browser vendors on day one after issuance).
