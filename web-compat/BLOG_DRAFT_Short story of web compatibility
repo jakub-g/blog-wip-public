@@ -9,10 +9,10 @@ is that things are _almost always more complicated than they seem at the first g
 This is true in any project, but even more when working on a platform which has
 to maintain strong backward compatibility.
 
-But normally, you only have to keep the compatibility _with just yourself_.
-However, a web browser is a special kind of software that sometimes has to keep
+Normally, you only have to keep the compatibility _with yourself_.
+However, a web browser is a kind of software that sometimes has to keep
 the compatibility with its older self _and_ other unrelated web browsers (sometimes
-even reproduce their bugs), _and_ even with outdated JavaScript libraries.
+even reproduce their bugs), _and even with_ outdated JavaScript libraries.
 
 (And it can even get worse, when you need to, for example, balance compatibility and security. This is always a huge trade-off to make. Anyway, I digress.)
 
@@ -30,15 +30,30 @@ Long, long time ago, there was a cool Norwegian desktop browser called Opera.
 but it's basically an entirely different browser, rebuilt from scratch on top of Chromium, using Blink rendering engine, compared to the previous one, using proprietary Presto engine.)
 It was never huge, but it had a lot of loyal users. It was actually a paid product first, and then an adware.
 
+Here's how it looked like:
+
 http://www.markschenk.com/various/o8intro/screenshots/searchesinbackground.png
 
-Opera/Presto was a very innovative browser, the first major browser to have tabs. It also had user-definable mouse gestures, built-in password manager with click-to-prefill feature...
+Opera/Presto was a very innovative browser, the first major browser to have tabs. It also had user-definable mouse gestures, built-in password manager with click-to-prefill feature, and many other powerful features.
 
 The main problems of Opera were 1) the IE, and 2) that it was _too much_ standards compliant.
 
-In the early 2000s, most of the pages in the internet were "working best in IE", as it was the dominant browser, of the time due to Microsoft monopolistic practices, so people were testing their pages basically only in IE. Since IE was 1) buggy and 2) using a lot of proprietary non-standard features in HTML/JavaScript/CSS, people would write bad code which would nonetheless render fine in IE, whereas it would not render well in Opera, mainly because it was parsing HTML differently in case of malformed syntax, unmatched opening/closing tags etc.
+In the early 2000s, most of the pages in the internet were "working best in IE", as it was the dominant browser of the time, due to Microsoft monopolistic practices. In the zenith of those dark times, 90% of the web was browser via the blue "e" icon browser.
 
-The other problem were the proprietary JavaScript APIs. For example, [this was a common piece of code a decade ago to make things work cross-browser](
+https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Browser_Wars_%28en%29.svg/800px-Browser_Wars_%28en%29.svg.png
+
+Most of web devs would only test their pages in IE. Since IE was 1) very buggy and 2) using a lot of proprietary non-standard features in HTML/JavaScript/CSS, people would write bad code which would nonetheless render fine in IE, whereas it would not render well in Opera. One problem was that it was parsing HTML differently in case of invalid syntax (unmatched opening/closing tags etc.) and while easy to fix, it required devs to care enough to test with Opera.
+
+Sometimes certain websites would outright block access unless you were using a certain blessed browser. (Sadly, this trend is now reappearing as "works only in Chrome".)
+
+https://cdn.guidingtech.com/media/assets/WordPress-Import/2012/06/opera-compatiblity-error1.png
+
+Opera had a dropdown with a lot different predefined "user agent" strings,
+so that in case the page didn't render well for the user, they could pretend they were using IE6 or Firefox and try their luck again. Those were _not_ fun times.
+
+https://cdn.guidingtech.com/media/assets/WordPress-Import/2012/06/identify-and-mask.png
+
+Apart from parser discrepancies, the other major problem were the proprietary JavaScript APIs. For example, [this was a common piece of code a decade ago to make things work cross-browser](
 https://www.nczonline.net/blog/2009/12/29/feature-detection-is-not-browser-detection/):
 
     if (document.getElementById) {  // standards-compliant
@@ -53,8 +68,7 @@ However, what if the developer just coded the whole thing with only IE in mind?
 
     element = document.all[id];
 
-Well, to survive the wild west of early 2000 websites, Opera implemented some of non-standard IE-specific APIs. For example, it implemented `document.all`. So the code above would actually work in Opera! (Opera also had a dropdown with a lot different predefined "user agent" strings,
-so that in case the page didn't render well for the user, they could pretend they were using IE6 or IE5.5 or Netscape and try their luck again. Those were _not_ fun times.)
+Well, to survive the wild west of late 90s and early 2000s, Opera implemented some of non-standard IE-specific APIs. For example, it implemented `document.all`. So the code above would actually work in Opera!
 
 However, here comes another problem. Other developers would have written code like this instead:
 
@@ -80,7 +94,7 @@ Some objects in global JS namespace (like `Array`) are _native objects_, and the
 
 > The internal methods specification talks about are [[Get]], [[Put]], [[Delete]], etc. Note how it says that internal methods behavior is implementation-dependent. What this means is that it's absolutely normal for host object to throw error on invocation of, say, [[Get]] method. And unfortunately, this isn't just a theory.
 
-Due to that, Opera engineers have shipped an implementation of `document.all` that was able to provide best of both worlds:
+Due to that, Opera engineers have shipped an implementation of `document.all` that was able to provide the best of both worlds:
 
     document.all[id] // returns a DOM element
     !!document.all   // `false`
@@ -88,6 +102,8 @@ Due to that, Opera engineers have shipped an implementation of `document.all` th
 Those times are long gone but now this [now even IE11 matches the sneaky behavior of Opera](https://www.nczonline.net/blog/2013/07/02/internet-explorer-11-dont-call-me-ie/) - in fact it's obliged to, because this behavior [made its way to the HTML5 standard](https://html.spec.whatwg.org/multipage/obsolete.html#dom-document-all). Welcome to the jungle.
 
 http://perfectionkills.com/extending-native-builtins/
+
+https://www.guidingtech.com/12642/fix-browser-incompatibility-error-opera/
 
 document.documentMode
 =====================
