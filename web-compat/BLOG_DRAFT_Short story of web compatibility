@@ -27,22 +27,25 @@ document.all
 
 Long, long time ago, there was a cool Norwegian desktop browser called Opera.
 (There's still Opera browser on the market, delivered by the same Opera Software,
-but it's basically an entirely different browser, rebuilt from scratch on top of Chromium, using Blink rendering engine, compared to the previous one, using proprietary Presto engine.)
-It was never huge, but it had a lot of loyal users. It was actually a paid product first, and then an adware.
+but it's basically an entirely different browser, rebuilt from scratch on top of Chromium, using Blink rendering engine; contrary to the previous one, that using proprietary Presto engine.)
+It never gained a huge market share, but it had a lot of loyal power users. It was actually a paid product first, and then an adware.
 
 Here's how it looked like:
 
 http://www.markschenk.com/various/o8intro/screenshots/searchesinbackground.png
 
-Opera/Presto was a very innovative browser, the first major browser to have tabs. It also had user-definable mouse gestures, built-in password manager with click-to-prefill feature, and many other powerful features.
+Opera/Presto was a very innovative browser, the first major browser to have tabs. It also had user-definable mouse gestures, built-in password manager with click-to-prefill, and many other powerful features that were years ahead of the market.
 
-The main problems of Opera were 1) the IE, and 2) that it was _too much_ standards compliant.
+Opera had some problems though:
+
+- Internet Explorer,
+- it was _too much_ standards compliant.
 
 In the early 2000s, most of the pages in the internet were "working best in IE", as it was the dominant browser of the time, due to Microsoft monopolistic practices. In the zenith of those dark times, 90% of the web was browser via the blue "e" icon browser.
 
 https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Browser_Wars_%28en%29.svg/800px-Browser_Wars_%28en%29.svg.png
 
-Most of web devs would only test their pages in IE. Since IE was 1) very buggy and 2) using a lot of proprietary non-standard features in HTML/JavaScript/CSS, people would write bad code which would nonetheless render fine in IE, whereas it would not render well in Opera. One problem was that it was parsing HTML differently in case of invalid syntax (unmatched opening/closing tags etc.) and while easy to fix, it required devs to care enough to test with Opera.
+Most of web devs would only test their pages in IE. Since IE was 1) very buggy and 2) using a lot of proprietary non-standard features in HTML/JavaScript/CSS, people would write bad code which would nonetheless render fine in IE, whereas it would not render well in Opera. One problem was that it was parsing HTML differently in case of invalid syntax (unmatched opening/closing tags etc.) and while it wasn't that difficult to fix, it required devs to care enough to test with Opera.
 
 Sometimes certain websites would outright block access unless you were using a certain blessed browser. (Sadly, this trend is now reappearing as "works only in Chrome".)
 
@@ -68,7 +71,7 @@ However, what if the developer just coded the whole thing with only IE in mind?
 
     element = document.all[id];
 
-Well, to survive the wild west of late 90s and early 2000s, Opera implemented some of non-standard IE-specific APIs. For example, it implemented `document.all`. So the code above would actually work in Opera!
+To survive the wild west of late 90s and early 2000s, Opera implemented some of non-standard IE-specific APIs. For example, it implemented `document.all`. So the code above would actually work in Opera!
 
 However, here comes another problem. Other developers would have written code like this instead:
 
@@ -99,7 +102,11 @@ Due to that, Opera engineers have shipped an implementation of `document.all` th
     document.all[id] // returns a DOM element
     !!document.all   // `false`
 
+In other words, `document.all` is a [falsy value](https://developer.mozilla.org/en-US/docs/Glossary/Falsy).
+(This might be useful to know when you are asked JS trivia in a technical interview, and probably for nothing else anymore.)
+
 Those times are long gone but now this [now even IE11 matches the sneaky behavior of Opera](https://www.nczonline.net/blog/2013/07/02/internet-explorer-11-dont-call-me-ie/) - in fact it's obliged to, because this behavior [made its way to the HTML5 standard](https://html.spec.whatwg.org/multipage/obsolete.html#dom-document-all). Welcome to the jungle.
+
 
 http://perfectionkills.com/extending-native-builtins/
 
