@@ -65,7 +65,7 @@ By knowing which requests are critical for the user experience, and which are se
 [RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncovering long chains of requests that are often bad for performance of the site.
 
 
-# Know what to measure
+# Think what to measure
 
 Most of the things you'll do in the beginning, like removing/shrinking assets, are "safe" to do, perhaps bring immediately visible improvements, and can't result in any regressions. But in order to progress, you need to know exactly **what are your KPIs** and **how to measure them**.
 
@@ -143,5 +143,5 @@ What is good for users on high bandwidth network -- for example, prefetching -- 
 
 Understanding the intricacies of web performance takes time, and even equipped with all the knowledge, finding the right course of action might be difficult. Sometimes you just have to roll up your sleeves, do some grunt work, and experiment by trial and error.
 
-No one have found yet a performance silver bullet. Learn new things, come up with ideas, try them out, measure, consider the trade-offs, and ship the improvements... one at time!
+No one have found yet a performance silver bullet. Learn new things, come up with ideas, try them out, measure, consider the trade-offs, and ship the improvements... one at a time!
 
