@@ -8,7 +8,7 @@ There's many very good articles out there how to use a new feature X or techniqu
 Before you start, it's good to know who are your users, and how they use your website, in order to take informed decisions later. The important things from performance aspect are for example:
 
 - % of users on mobile vs desktop browsers,
-- split of audience by browser engine: Chrome-like, Safari, Firefox, Edge, IE
+- split of audience by browser engine: Chrome-like, Safari, Firefox, Edge, IE,
 - split of audience by country.
 
 Very likely you're already using analytics tool that can answer those questions. Take some time to analyze this data and **write it down somewhere**, including the analysis date, so it's easily accessible when you need it, and available for re-evaluation and comparison in a few months.
@@ -68,12 +68,12 @@ Understanding how new browser features exactly work might also be tricky when yo
 
 A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest tests in all major browsers.**
 
-Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
+**Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines** -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
 
 
 # Think what to measure
 
-Most of the things you'll do in the beginning, like removing/shrinking assets, are "safe" to do, perhaps bring immediately visible improvements, and can't result in any regressions. But in order to progress, you need to know exactly **what are your KPIs** and **how to measure them**.
+Most of the early optimizations, like removing/shrinking assets, will be safe to do, bring immediately visible improvements, and generally can't result in regressions. But in order to progress further and long-term, you need to know exactly **what are your KPIs** and **how to measure them**.
 
 This can be surprisingly hard to define, and it heavily depends on what type of website/webapp you have. The "traditional" metrics like time for the browser to fire `load` or `DOMContentLoaded` events are not really suitable for modern websites, and even more for JS-heavy SPAs (Single-Page Applications). In any case, forget about "one number to rule them all". Most likely you'll need several metrics to understand the full picture.
 
@@ -82,7 +82,7 @@ This can be surprisingly hard to define, and it heavily depends on what type of 
 
 Apart from being hard to define, certain things are still hard to measure accurately, in particular the visual events (_"when did my images and text become visible?"_). This is difficult to answer, because text rendering might depend on availability of external CSS and webfonts (and if they're pending download, this can result in so-called [Flash of Invisible Text](https://www.zachleat.com/web/fout-vs-foit/)), while the `load` event for the images has been known to not fire accurately (compared to when the pixels are actually rendered on the screen).
 
-Until recently the browsers simply didn't offer enough details to measure [rendering performance](https://speedcurve.com/blog/rendering-metrics/), and WebPageTest's **Speed Index** and **Visually Complete** became the gold standard. Those are quite complex metrics, created by taking a series of screenshots and analyzing how the rendered content changes over time, but you should [take a while to understand them](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index); they convey the user experience much better than simple metrics..
+Until recently the browsers simply didn't offer enough details to measure [rendering performance](https://speedcurve.com/blog/rendering-metrics/), and WebPageTest's **Speed Index** and **Visually Complete** became the gold standard. Those are quite complex metrics, created by taking a series of screenshots and analyzing how the rendered content changes over time, but you should [take a while to understand them](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index); they convey the user experience much better than simple metrics.
 
 Having said that, browsers (notably Chrome) did some progress in this area in 2018, by shipping in-browser APIs like `PerformanceObserver` which expose events like [**First Contentful Paint** and **First Meaningful Paint**](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics).
 
@@ -102,7 +102,9 @@ When testing things locally on your powerful MacBook Pro, plugged in, and using 
 
 That's why it's important to use **network and CPU throttling** when testing your page. (To be fair, it can be a shocking experience.) 
 
-You can enable throttling via devtools in your favorite browser ([Chrome example](https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#throttling)), on an operating system level (perhaps [with a proxy like Fiddler](https://stackoverflow.com/questions/16276669/simulate-network-speeds-using-fiddler)), or when running tests with WebPageTest ("Advanced Settings" panel). Network throttling is also useful in benchmarks to have comparable numbers over time. If you want to go even further, you can try [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/), or a variation of it.
+You can enable throttling via devtools in your favorite browser ([Chrome example](https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#throttling)), on an operating system level (perhaps [with a proxy like Fiddler](https://stackoverflow.com/questions/16276669/simulate-network-speeds-using-fiddler)), or when running tests with WebPageTest ("Advanced Settings" panel). Network throttling is also useful in benchmarks to have comparable numbers over time.
+
+If you want to go even further, you can try a variation of [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/).
 
 
 # Distinguish latency, bandwidth and CPU
@@ -140,10 +142,9 @@ WebPageTest is an extremely powerful tool, and you can read lots of information 
 You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually explore the waterfall.
 
 
-
 # Know your build tool
 
-Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards (e.g. [**code splitting**](https://webpack.js.org/guides/code-splitting/)).
+Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards. In particular, [**code splitting**](https://webpack.js.org/guides/code-splitting/) is a critical technique if you ship big amounts of JavaScript.
 
 
 # Understand the trade-offs
@@ -151,6 +152,7 @@ Bundlers like webpack have quite a few configuration options that can help with 
 Improving on one metric sometimes means worsening on another; improving things for browser X can yield regressions in browser Y.
 
 Think about it upfront, test regularly all major browser engines, and make sure the keep the balance right. **Create views or filters in your analytics tool to be able to quickly isolate stats from different browsers**, different countries etc. When deploying major changes, make sure to check each view separately.
+
 
 # Trust but verify
 
@@ -160,6 +162,7 @@ Be wary of the blog posts that offer silver bullets and never mention any drawba
 # Remember that one size does not fit all
 
 What is good for users on high bandwidth network -- for example, prefetching -- is not always good for users with limited data plans or low bandwidth (developing countries, users on data roaming). [Networking Information API, Client Hints, dynamic request rewriting through a service worker](https://calendar.perfplanet.com/2018/dynamic-resources-browser-network-device-memory/) might be useful to mitigate some of those concerns.
+
 
 # Write down what you learn
 
