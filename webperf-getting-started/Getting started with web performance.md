@@ -66,7 +66,7 @@ Complex webapps often have to implement many functionalities and trigger several
 Performance-oriented browser features are often very new and hence not battle-tested yet, and might have some sneaky bugs or slightly different behaviors in different browsers. 
 Understanding how new browser features exactly work might also be tricky when you apply them directly to a big real-life project.
 
-A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest campaign in all major browsers.**
+A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest tests in all major browsers.**
 
 Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
 
@@ -89,16 +89,16 @@ Having said that, browsers (notably Chrome) did some progress in this area in 20
 
 # Invent custom metrics
 
-Apart from off-the-shelf metrics, you probably need some custom metrics that are specific to your website, combining timestamps of custom events in your JavaScript code with resources' fetch times and sizes, taken from [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Resource_Timing_API/Using_the_Resource_Timing_API).
+Apart from off-the-shelf metrics, you probably need some custom metrics that are specific to your website; perhaps combining timestamps of custom events in your JavaScript code with resources' fetch times and sizes, taken from [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Resource_Timing_API/Using_the_Resource_Timing_API).
 
 When creating custom metrics, you may want **a mix of well-defined, fine-grained, actionable metrics** (e.g., _"time between JavaScript `method1()` and `method2()` call"_), **and the higher level metrics** that convey the real user experience (e.g. _"time from the HTML `responseStart` to an `myImportantAppLifecycleEvent`"_). The former are good benchmark points if you work explicitly on improving a given metric (and to catch accidental regressions), while the latter are less prone to the large refactorings you may do, and the code changes that trade-off improving one fine-grained metric at the cost worsening the other.
 
-Note that [Navigation Timing](https://nicj.net/navigationtiming-in-practice/) and [Resource Timing](https://nicj.net/resourcetiming-visibility-third-party-scripts-ads-and-page-weight/) APIs have been buggy in some early implementations; watch out for outliers (negative, or extremely huge values), or use a library like [boomerang](https://github.com/akamai/boomerang).
+Note that [Navigation Timing](https://nicj.net/navigationtiming-in-practice/) and [Resource Timing](https://nicj.net/resourcetiming-visibility-third-party-scripts-ads-and-page-weight/) APIs have been buggy in some early implementations; watch out for outliers (negative, or extremely huge values) which may skew the statistics (talking of which: make sure to [use percentiles instead of averages](https://phabricator.wikimedia.org/phame/live/7/post/83/measuring_wikipedia_page_load_times/)). Finally, you may want to use a library like [boomerang](https://github.com/akamai/boomerang) instead of writing your own.
 
 
 # Learn to use throttling
 
-When testing things locally on your powerful MacBook Pro, plugged in, and using gigabit WiFi backed by a fiber optics link, your page will feel fast no matter what. But this is not how your users on a mid-tier Android device, on a 3G connection, perhaps during their commute (hence with unstable internet) will experience your page.
+When testing things locally on your powerful MacBook Pro, plugged in, and using gigabit WiFi backed by a fiber optics link, your page will feel fast no matter what. But this is not how your users on a mid-tier Android device, on a mobile connection, perhaps during their commute (hence with unstable internet) will experience your page.
 
 That's why it's important to use **network and CPU throttling** when testing your page. (To be fair, it can be a shocking experience.) 
 
