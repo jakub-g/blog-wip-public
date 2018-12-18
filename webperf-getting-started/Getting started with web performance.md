@@ -38,15 +38,6 @@ Run your page in several performance tools, to get familiar with them, and ident
 At this point, you will already know some things that are relatively easy to get fixed (at least in theory), but have high impact: uncompressed assets, unoptimized images etc. 
 
 
-# Learn to use throttling
-
-When testing things locally on your powerful MacBook Pro, plugged in, and using gigabit WiFi backed by a fiber optics link, your page will feel fast no matter what. But this is not how your users on a mid-tier Android device, on a 3G connection, perhaps during their commute (hence with unstable internet) will experience your page.
-
-That's why it's important to use **network and CPU throttling** when testing your page. (To be fair, it can be a shocking experience.) You can enable throttling via devtools in your favorite browser, on an operating system level (perhaps with a proxy like Fiddler), or when running tests with WebPageTest. Network throttling is also useful in benchmarks to have comparable numbers over time.
-
-If you want to go even further, you can try [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/), or a variation of it.
-
-
 # Know your HTML
 
 Get your website's HTML output (`Ctrl-U` in Firefox and Chrome, for example), unminify, and analyze it. **Create a high level documentation of what makes it into your HTML, why it's there** (ask your teammates if you don't know), and how many bytes it takes.
@@ -56,13 +47,28 @@ On long-living projects, it might be the case that some cruft has accumulated ov
 
 # Know your subresources
 
-The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 20-30 on the list), and how critical are they.
+The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical are they.
 
 If you're unsure about what a given request does, you may **try blocking it or introducing a huge artificial latency** and see how the website behaves (this is also useful for uncovering unexpected single-point-of-failure dependencies). There are countless ways to do it: the _"Request blocking"_ feature of Chrome Dev Tools, the _"AutoResponder"_ (with latency) feature of Fiddler, and _"Block"_ or _"SPOF"_ features of WebPageTest; even an adblocker in any browser will do.
 
 By knowing which requests are critical for the user experience, and which are secondary, you can better prioritize your optimization work.
 
 [RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncovering long chains of requests that are often bad for performance of the site.
+
+
+# Have a way to isolate features
+
+Complex webapps often have to implement many functionalities and trigger several dozens of requests; analyzing all of it at the same time is not always easy. **By having a possibility to easily disable certain features (e.g. via a query string), you could make your life much easier.**
+
+
+# Test small
+
+Performance-oriented browser features are often very new and hence not battle-tested yet, and might have some sneaky bugs or slightly different behaviors in different browsers. 
+Understanding how new browser features exactly work might also be tricky when you apply them directly to a big real-life project.
+
+A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest campaign in all major browsers.**
+
+Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
 
 
 # Think what to measure
@@ -90,20 +96,42 @@ When creating custom metrics, you may want **a mix of well-defined, fine-grained
 Note that [Navigation Timing](https://nicj.net/navigationtiming-in-practice/) and [Resource Timing](https://nicj.net/resourcetiming-visibility-third-party-scripts-ads-and-page-weight/) APIs have been buggy in some early implementations; watch out for outliers (negative, or extremely huge values), or use a library like [boomerang](https://github.com/akamai/boomerang).
 
 
+# Learn to use throttling
+
+When testing things locally on your powerful MacBook Pro, plugged in, and using gigabit WiFi backed by a fiber optics link, your page will feel fast no matter what. But this is not how your users on a mid-tier Android device, on a 3G connection, perhaps during their commute (hence with unstable internet) will experience your page.
+
+That's why it's important to use **network and CPU throttling** when testing your page. (To be fair, it can be a shocking experience.) 
+
+You can enable throttling via devtools in your favorite browser ([Chrome example](https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#throttling)), on an operating system level (perhaps [with a proxy like Fiddler](https://stackoverflow.com/questions/16276669/simulate-network-speeds-using-fiddler)), or when running tests with WebPageTest ("Advanced Settings" panel). Network throttling is also useful in benchmarks to have comparable numbers over time. If you want to go even further, you can try [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/), or a variation of it.
+
+
+# Distinguish latency, bandwidth and CPU
+
+As the new generation mobile networks are installed and upgraded, the internet **bandwidth** rapidly improves each year, even in developing countries. **Modern 4G connections might perform better than outdated landlines** -- the type of connection might be a misleading factor.
+
+**Latency**, on the other hand, doesn't improve as fast, due to physical constraints. The long tail of users who are thousands of kilometres away from your servers can't do anything to improve their latency, but by acknowledging the problem and acting on it (minimizing the number of round-trips, [recognizing the TCP slow start](https://calendar.perfplanet.com/2018/tcp-slow-start/), initiating DNS/TCP/TLS/resource requests early with `dns-prefetch`/`preconnect`/`preload` etc.) you can significantly mitigate the issue.
+
+Last but not least, while the high-end mobile devices are as powerful as yesteryear desktops, **the low-end devices are barely improving** -- they're just getting cheaper, while still having **slow CPUs and small amounts of RAM** (though likely [enjoying the same networks conditions](https://phabricator.wikimedia.org/phame/live/7/post/109/mobile_web_performance_the_importance_of_the_device/)).
+
+Especially when it comes to big JavaScript bundles, the bandwidth (download) is no longer a bottleneck -- the CPU speed (parsing and executing) is.
+
+
 # Learn the difference between HTTP/1.1 and HTTP/2
 
 HTTP/2 (a.k.a `h2`, confusingly for HTML writers!) is a major revision of the HTTP protocol that significantly changes how the resources are transferred over the wire, and have completely different performance characteristics than HTTP/1.1. Some **"best practices" or HTTP/1 world (like domain sharding) no longer make sense in HTTP/2**, but equally important is that the **implementations of certain HTTP/2 features, both in various browsers and servers, are wildly different** and often incomplete.
 
 As a first thing, check in your favorite devtools' network panel whether your assets are served over HTTP/1 or HTTP/2 (right click the column list and tick `Protocol` entry to make it appear).
 
-Most likely you'll have a mix of both, if your app uses multiple domains for images, scripts and dynamic data. Once you know this, adjust to the best practices of each transport. In general, you should *try to reuse the HTTP/2 connection as much as possible*; browsers will try to do it for you by "coalescing" some requests into the same connection, [but each of them does it slightly differently](https://twitter.com/__jakub_g/status/1062718923341103106).
+Quite likely you'll have a mix of both, if your app uses multiple domains for images, scripts and dynamic data. Once you know this, adjust to the best practices of each transport. In general, you should *try to reuse the HTTP/2 connection as much as possible*; browsers will try to do it for you by "coalescing" some requests into the same connection, [but each of them does it slightly differently](https://twitter.com/__jakub_g/status/1062718923341103106).
+
+_(Keep in mind that most developer proxies -- like Fiddler -- silently downgrade all connections to HTTP/1.1. Make sure to have them disabled when doing performance investigations, to avoid observing misleading behaviors.)_
 
 In general, as of late 2018, **WebPageTest provides more advanced HTTP/2 information than the browsers' devtools**, so if you use HTTP/2 for some of your assets, you should take time to explore WPT waterfall and connection view.
 
 
 # Become friends with the waterfall
 
-WebPageTest is an extremely powerful tool, and you can read a lot of information from its waterfall and connection view. This is a topic for a whole separate blog posts, but briefly, the most actionable info you can start from are:
+WebPageTest is an extremely powerful tool, and you can read lots of information from its waterfall and connection views. This is a topic for a whole separate blog post, but briefly, the most actionable info you can start from are:
 
 - shape of the waterfall (the more "vertical", the better),
 - gaps of "network silence",
@@ -112,19 +140,10 @@ WebPageTest is an extremely powerful tool, and you can read a lot of information
 You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually explore the waterfall.
 
 
+
 # Know your build tool
 
-Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards (e.g. **code splitting**).
-
-
-# Test small
-
-Performance-oriented browser features are often very new and hence not battle-tested yet, and might have some sneaky bugs or slightly different behaviors in different browsers. 
-Understanding how new browser features exactly work might also be tricky when you apply them directly to a big real-life project.
-
-A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest campaign in all major browsers.**
-
-Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
+Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards (e.g. [**code splitting**](https://webpack.js.org/guides/code-splitting/)).
 
 
 # Understand the trade-offs
@@ -133,15 +152,30 @@ Improving on one metric sometimes means worsening on another; improving things f
 
 Think about it upfront, test regularly all major browser engines, and make sure the keep the balance right. **Create views or filters in your analytics tool to be able to quickly isolate stats from different browsers**, different countries etc. When deploying major changes, make sure to check each view separately.
 
+# Trust but verify
+
+Be wary of the blog posts that offer silver bullets and never mention any drawbacks. Always test on multiple browsers and device types.
+
 
 # Remember that one size does not fit all
 
 What is good for users on high bandwidth network -- for example, prefetching -- is not always good for users with limited data plans or low bandwidth (developing countries, users on data roaming). [Networking Information API, Client Hints, dynamic request rewriting through a service worker](https://calendar.perfplanet.com/2018/dynamic-resources-browser-network-device-memory/) might be useful to mitigate some of those concerns.
+
+# Write down what you learn
+
+It's easy to get lost when learning too many things too fast. Write down the new things you discovered, bookmark useful URLs etc. so that you can come back to them later. Opening tickets in the issue tracker to further research some ideas might also do the trick.
+
+
+# Reach out to the community
+
+Perf community is not big, but if you get stuck, you can often count on good and curious people willing to help on [WebPageTest forum](https://www.webpagetest.org/forums/). Twitter might also be a good source of information that are not always written elsewhere.
 
 
 # Keep learning and keep shipping, one thing at a time
 
 Understanding the intricacies of web performance takes time, and even equipped with all the knowledge, finding the right course of action might be difficult. Sometimes you just have to roll up your sleeves, do some grunt work, and experiment by trial and error.
 
-No one have found yet a performance silver bullet. Learn new things, come up with ideas, try them out, measure, consider the trade-offs, and ship the improvements... one at a time!
+No one have found yet a performance silver bullet. Learn new things, come up with ideas, try them out, measure, consider the trade-offs, and ship the improvements -- one at a time.
+
+Enjoy your performance journey!
 
