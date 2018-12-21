@@ -51,7 +51,7 @@ The next thing to understand your website is to know what HTTP requests a page l
 
 If you're unsure about what a given request does, you may **try blocking it or introducing a huge artificial latency** and see how the website behaves (this is also useful for uncovering unexpected single-point-of-failure dependencies). There are countless ways to do it: the _"Request blocking"_ feature of Chrome Dev Tools, the _"AutoResponder"_ (with latency) feature of Fiddler, and _"Block"_ or _"SPOF"_ features of WebPageTest; even an adblocker in any browser will do.
 
-By knowing which requests are critical for the user experience, and which are secondary, you can better prioritize your optimization work.
+By knowing which requests are critical for user experience, and which are secondary, you can better prioritize your optimization work. If possible, [load your scripts asynchronously](https://speedcurve.com/blog/load-scripts-async/) or [using `defer`](https://gist.github.com/jakub-g/385ee6b41085303a53ad92c7c8afd7a6)
 
 [RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncover long chains of requests that are often bad for performance of the site.
 
@@ -86,7 +86,7 @@ Apart from being hard to define, certain things are still hard to measure accura
 
 Until recently the browsers simply didn't offer enough details to measure [rendering performance](https://speedcurve.com/blog/rendering-metrics/), and WebPageTest's **Speed Index** and **Visually Complete** became the gold standard. Those are quite complex metrics, created by taking a series of screenshots and analyzing how the rendered content changes over time, but you should [take a while to understand them](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index); they convey the user experience much better than simple metrics.
 
-Having said that, browsers (notably Chrome) did some progress in this area in 2018, by shipping in-browser APIs like `PerformanceObserver` which exposes events like [**First Contentful Paint** and **First Meaningful Paint**](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics).
+Having said that, browsers (notably Chrome) did some progress in this area in 2018, by shipping in-browser APIs like `PerformanceObserver` which exposes events like [**First Contentful Paint** and **First Meaningful Paint**](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics). If you're interested in the details, check [this Paul Irish's talk](https://www.youtube.com/watch?v=XvZ7-Uh0R4Q).
 
 
 # Invent custom metrics
