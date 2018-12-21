@@ -1,38 +1,38 @@
 # Getting started with web performance in 2019
 
-There's many very good articles out there how to use a new feature X or technique Y or tool Z to improve the performance of your websites. Navigating the labyrinth of modern web performance might be tough though if you're new to the topic. In this article I will try to come up with a guide to getting started your performance journey.
+There are many very good articles out there on how to use new feature X or technique Y or tool Z to improve the performance of your websites. Navigating the labyrinth of modern web performance might be tough though if you're new to the topic. In this article I will try to come up with a guide to getting started your performance journey.
 
 
 # Know your users
 
-Before you start, it's good to know who are your users, and how they use your website, in order to take informed decisions later. The important things from performance aspect are for example:
+Before you start, it's good to know who your users are and how they use your website, in order to make informed decisions later. The important things from a performance aspect are for example:
 
 - % of users on mobile vs desktop browsers,
 - split of audience by browser engine: Chrome-like, Safari, Firefox, Edge, IE,
 - split of audience by country.
 
-Very likely you're already using analytics tool that can answer those questions. Take some time to analyze this data and **write it down somewhere**, including the analysis date, so it's easily accessible when you need it, and available for re-evaluation and comparison in a few months.
+You're very likely already using analytics tools that can answer those questions. Take some time to analyze this data and **write it down somewhere**, including the analysis date, so it's easily accessible when you need it, and available for re-evaluation and comparison in a few months.
 
-_Note that global stats are often different than local ones_: in particular, in countries with high data costs, proxying browsers like UC Browser, Opera Mini etc. are heavily popular, while almost unused elsewhere.
+_Note that global stats are often different than local ones_: in particular, in countries with high data costs, proxying browsers like UC Browser, Opera Mini etc. are very popular, while almost unused elsewhere.
 
 
 # Identify test URLs
 
-Come up with a few URLs that will be representative candidates for performance analysis and optimization. Probably you want some URLs that receive **high amount of traffic**, have **relatively stable content** over time, and give a good **approximation of various features** of your website.
+Come up with a few URLs that will be representative candidates for performance analysis and optimization. You probably want some URLs that receive a **high amount of traffic**, have **relatively stable content** over time, and give a good **approximation of various features** of your website.
 
-Your landing page is a first natural candidate. If you're a newspaper, a selected popular  past article will be another one.
+Your landing page is a natural first candidate. For a newspaper, a popular past article would be another candidate.
 
 For example, Wikimedia's performance team uses "Barack Obama" and "Sweden" articles from English Wikipedia in their benchmarks and performance monitoring.
 
 
 # Get to know the tools
 
-Run your page in several performance tools, to get familiar with them, and identify some "quick wins". Each of those tools can provide some insights that others may be missing, or can explain it better, so it's worth trying them all to see which ones are most useful for your particular use cases.
+Run your page in several performance tools, to get familiar with them and identify some "quick wins". Different tools might provide insights that others are missing, or might explain something better than others – so it's worth trying them all to see which ones are most useful for your particular use cases.
 
-- **Lighthouse** is probably the easiest to get started, provides lots of details relevant for modern JS-heavy web applications: run the audit locally via "Audits" tab in Chrome Dev Tools, or from any browser [via a webapp](https://developers.google.com/web/tools/lighthouse/run) or [via WPT](https://www.webpagetest.org/lighthouse).
+- **Lighthouse** is probably the easiest to get started with, and provides lots of details relevant for modern JS-heavy web applications: run the audit locally via "Audits" tab in Chrome Dev Tools, or from any browser [via a webapp](https://developers.google.com/web/tools/lighthouse/run) or [via WPT](https://www.webpagetest.org/lighthouse).
 - **[WebPageTest](https://www.webpagetest.org/)** is the "Swiss Army knife" of web performance, very powerful and with many "hidden features" for advanced users. The more you dive into webperf, the more you will be using it. [Using WebPageTest](http://shop.oreilly.com/product/0636920033592.do) book is a great reference.
 - **[Yellow Lab Tools](https://yellowlab.tools/)** can also provide a useful breakdown of various performance metrics.
-- While not strictly performance-focused, check also **[WebHint](https://webhint.io/scanner/)** and **[RedBot](https://redbot.org/)** which can uncover interoperability and correctness issues of your website, suggest improvements, and help you get rid of useless HTTP headers. 
+- While not strictly performance-focused, also check out **[WebHint](https://webhint.io/scanner/)** and **[RedBot](https://redbot.org/)** which can uncover interoperability and correctness issues of your website, suggest improvements, and help you get rid of useless HTTP headers. 
 - Check also **[SiteSpeed.io](https://www.sitespeed.io/)** for a vast collection of open source webperf tools.
 
 At this point, you will already know some things that are relatively easy to get fixed (at least in theory), but have high impact: uncompressed assets, unoptimized images etc. 
@@ -42,28 +42,28 @@ At this point, you will already know some things that are relatively easy to get
 
 Get your website's HTML output (`Ctrl-U` in Firefox and Chrome, for example), unminify, and analyze it. **Create a high level documentation of what makes it into your HTML, why it's there** (ask your teammates if you don't know), and how many bytes it takes.
 
-On long-living projects, it might be the case that some cruft has accumulated over the years that is not really needed anymore, and can be safely removed. (bonus points if it's a third-party JavaScript!)
+On long-living projects, some cruft might have accumulated over the years that is no longer really needed, and can be safely removed. (Bonus points if it's third-party JavaScript!)
 
 
 # Know your subresources
 
-The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical are they.
+The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are.
 
 If you're unsure about what a given request does, you may **try blocking it or introducing a huge artificial latency** and see how the website behaves (this is also useful for uncovering unexpected single-point-of-failure dependencies). There are countless ways to do it: the _"Request blocking"_ feature of Chrome Dev Tools, the _"AutoResponder"_ (with latency) feature of Fiddler, and _"Block"_ or _"SPOF"_ features of WebPageTest; even an adblocker in any browser will do.
 
 By knowing which requests are critical for the user experience, and which are secondary, you can better prioritize your optimization work.
 
-[RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncovering long chains of requests that are often bad for performance of the site.
+[RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncover long chains of requests that are often bad for performance of the site.
 
 
 # Have a way to isolate features
 
-Complex webapps often have to implement many functionalities and trigger several dozens of requests; analyzing all of it at the same time is not always easy. **By having a possibility to easily disable certain features (e.g. via a query string), you could make your life much easier.**
+Complex webapps often have to implement many functionalities and trigger dozens of requests; analyzing all of it at the same time is not always easy. **By having a possibility to easily disable certain features (e.g. via a query string), you could make your life much easier.**
 
 
 # Test small
 
-Performance-oriented browser features are often very new and hence not battle-tested yet, and might have some sneaky bugs or slightly different behaviors in different browsers. 
+Performance-oriented browser features are often very new and hence not battle-tested yet, so they might have some sneaky bugs or slightly different behaviors in different browsers. 
 Understanding how new browser features exactly work might also be tricky when you apply them directly to a big real-life project.
 
 A good idea might be to go back to the basics, **create small isolated HTML pages for testing**, deploy them to a public server (I use GitHub Pages for that), and **run WebPageTest tests in all major browsers.**
@@ -71,9 +71,9 @@ A good idea might be to go back to the basics, **create small isolated HTML page
 **Due to unified WebPageTest UI, it's then easy to compare behavior across browser engines** -- much easier than looking at disparate dev tools interfaces. And if you uncover some unexpected behaviors, you already have a reduced test case to submit a bug report to the browser vendor.
 
 
-# Think what to measure
+# Think about what to measure
 
-Most of the early optimizations, like removing/shrinking assets, will be safe to do, bring immediately visible improvements, and generally can't result in regressions. But in order to progress further and long-term, you need to know exactly **what are your KPIs** and **how to measure them**.
+Most early optimizations, like removing/shrinking assets, will be safe to do, bring immediately visible improvements, and generally can't result in regressions. But in order to progress further and long-term, you need to know exactly **what are your KPIs** and **how to measure them**.
 
 This can be surprisingly hard to define, and it heavily depends on what type of website/webapp you have. The "traditional" metrics like time for the browser to fire `load` or `DOMContentLoaded` events are not really suitable for modern websites, and even more for JS-heavy SPAs (Single-Page Applications). In any case, forget about "one number to rule them all". Most likely you'll need several metrics to understand the full picture.
 
@@ -84,7 +84,7 @@ Apart from being hard to define, certain things are still hard to measure accura
 
 Until recently the browsers simply didn't offer enough details to measure [rendering performance](https://speedcurve.com/blog/rendering-metrics/), and WebPageTest's **Speed Index** and **Visually Complete** became the gold standard. Those are quite complex metrics, created by taking a series of screenshots and analyzing how the rendered content changes over time, but you should [take a while to understand them](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index); they convey the user experience much better than simple metrics.
 
-Having said that, browsers (notably Chrome) did some progress in this area in 2018, by shipping in-browser APIs like `PerformanceObserver` which expose events like [**First Contentful Paint** and **First Meaningful Paint**](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics).
+Having said that, browsers (notably Chrome) did some progress in this area in 2018, by shipping in-browser APIs like `PerformanceObserver` which exposes events like [**First Contentful Paint** and **First Meaningful Paint**](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics).
 
 
 # Invent custom metrics
