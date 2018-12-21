@@ -45,7 +45,7 @@ Get your website's HTML output (`Ctrl-U` in Firefox and Chrome, for example), un
 On long-living projects, some cruft might have accumulated over the years that is no longer really needed, and can be safely removed. (Bonus points if it's third-party JavaScript!)
 
 
-# Know your subresources
+# Know your subresources (CSS, JS, images)
 
 The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are.
 
@@ -54,6 +54,8 @@ If you're unsure about what a given request does, you may **try blocking it or i
 By knowing which requests are critical for the user experience, and which are secondary, you can better prioritize your optimization work.
 
 [RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncover long chains of requests that are often bad for performance of the site.
+
+[Coverage tab in Chrome dev tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) can help you find unused JavaScript and CSS.
 
 
 # Have a way to isolate features
@@ -93,8 +95,24 @@ Apart from off-the-shelf metrics, you probably need some custom metrics that are
 
 When creating custom metrics, you may want **a mix of well-defined, fine-grained, actionable metrics** (e.g., _"time between JavaScript `method1()` and `method2()` call"_), **and the higher level metrics** that convey the real user experience (e.g. _"time from the HTML `responseStart` to an `myImportantAppLifecycleEvent`"_). The former are good benchmarks for working explicitly on improving a given metric (and to catch accidental regressions). The latter are less prone to change with large refactors and code changes that trade-off improving one fine-grained metric at the cost worsening the other.
 
-Note that [Navigation Timing](https://nicj.net/navigationtiming-in-practice/) and [Resource Timing](https://nicj.net/resourcetiming-visibility-third-party-scripts-ads-and-page-weight/) APIs have been buggy in some early implementations; watch out for outliers (negative, or extremely huge values) which may skew the statistics (speaking of which: make sure to [use percentiles instead of averages](https://phabricator.wikimedia.org/phame/live/7/post/83/measuring_wikipedia_page_load_times/)). Finally, you may want to use a library like [boomerang](https://github.com/akamai/boomerang) instead of writing your own.
+Note that [Navigation Timing](https://nicj.net/navigationtiming-in-practice/) and [Resource Timing](https://nicj.net/resourcetiming-visibility-third-party-scripts-ads-and-page-weight/) APIs have been buggy in some early implementations; watch out for outliers (negative, or extremely huge values) which may skew the statistics. Finally, you may want to use a library like [boomerang](https://github.com/akamai/boomerang) instead of writing your own.
 
+
+# Get familiar with basics of statistics
+
+To be able to make sense of real user monitor (RUM) data, you need to learn [the difference between the average and the median, and what are the percentiles](https://phabricator.wikimedia.org/phame/live/7/post/83/measuring_wikipedia_page_load_times/). 
+
+Certain kinds of optimizations might not be visible in the median numbers, but may do a huge difference in 90th, 95th and 99th percentile. In general, you should probably avoid using averages, as they can be very misleading, and strongly consider using tools that provide [percentile data and bucketed distribution graphs](https://www.dynatrace.com/news/blog/why-averages-suck-and-percentiles-are-great/) instead.
+
+Keep in mind that independent events *are independent*; [you can not just sum the averages or percentiles](https://www.slideshare.net/vividcortex/monitoring-with-percentiles/38) and assume the obtained data will be representative.
+
+
+# Be mindful with analytics
+
+As mentioned at the beginning of this article, analyzing global data set can be misleading. For example, some features on your website might only be available to the logged in users. This might mean that the performance outlook of your landing page for the logged in and not logged user might be very different.
+
+**Identify the main criteria that affect performance, and be able to narrow down your analytics view** to compare between the multiple variants (logged in/not logged in, mobile/desktop etc.) 
+ 
 
 # Learn to use throttling
 
@@ -142,9 +160,16 @@ WebPageTest is an extremely powerful tool, and you can read lots of information 
 Understanding the waterfall is essential for doing non-trivial optimizations. You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually dive into the topic with free exploration.
 
 
-# Know your build tool
+# Know your build tools
 
 Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards. In particular, [**code splitting**](https://webpack.js.org/guides/code-splitting/) is a critical technique if you ship big amounts of JavaScript.
+
+If you're using babel to transpile ES2015+ code, make sure to use and properly configure [babel-preset-env](http://2ality.com/2017/02/babel-preset-env.html) according to your browser support level, to avoid unnecessary transpilation and polyfills in your final bundles.
+
+
+# Use developer versions of web browsers
+
+Pre-release versions of Firefox (Beta/Dev Edition/Nightly), Chrome (Beta/Dev/Canary), Safari (Technology Preview) are very stable those days. They deliver previews of new web platform features and important changes before they get to the end users, provide early warnings about deprecations, and often offer **significant improvements in the dev tools**, weeks/months before reaching the mainstream.
 
 
 # Understand the trade-offs
@@ -156,7 +181,11 @@ Think about it upfront, test regularly all major browser engines, and make sure 
 
 # Trust but verify
 
-Be wary of the blog posts that offer silver bullets and never mention any drawbacks. Always test on multiple browsers and device types.
+Be wary of the blog posts that offer silver bullets and never mention any drawbacks. **Always test on multiple browsers and device types.**
+
+For example, `<link rel=preload>` is a great feature when used properly and when it fits your need, but when not used with care, it may actually downgrade the performance by over-prioritizing certain requests, at the expense of the more important ones.
+
+Another example: `<script type="module">` / `<script nomodule>` is a promising pattern for shipping modern JavaScript to modern browsers and transpiled ES5 to legacy ones, but it results in [duplicated requests in some browsers](https://gist.github.com/jakub-g/5fc11af85a061ca29cc84892f1059fec).
 
 
 # Remember that one size does not fit all
