@@ -109,18 +109,18 @@ If you want to go even further, you can try a variation of [2G Tuesdays](https:/
 
 # Distinguish latency, bandwidth and CPU
 
-As the new generation mobile networks are installed and upgraded, the internet **bandwidth** rapidly improves each year, even in developing countries. **Modern 4G connections might perform better than outdated landlines** -- the type of connection might be a misleading factor.
+As new generation mobile networks are installed and upgraded, internet **bandwidth** rapidly improves each year, even in developing countries. **Modern 4G connections might perform better than outdated landlines** -- the type of connection might be a misleading factor.
 
 **Latency**, on the other hand, doesn't improve as fast, due to physical constraints. The long tail of users who are thousands of kilometres away from your servers can't do anything to improve their latency, but by acknowledging the problem and acting on it (minimizing the number of round-trips, [recognizing the TCP slow start](https://calendar.perfplanet.com/2018/tcp-slow-start/), initiating DNS/TCP/TLS/resource requests early with `dns-prefetch`/`preconnect`/`preload` etc.) you can significantly mitigate the issue.
 
-Last but not least, while the high-end mobile devices are as powerful as yesteryear desktops, **the low-end devices are barely improving** -- they're just getting cheaper, while still having **slow CPUs and small amounts of RAM** (though likely [enjoying the same networks conditions](https://phabricator.wikimedia.org/phame/live/7/post/109/mobile_web_performance_the_importance_of_the_device/)).
+Last but not least, while high-end mobile devices are as powerful as yesteryear desktops, **low-end devices are barely improving** -- they're just getting cheaper, but still have **slow CPUs and small amounts of RAM** (though likely [enjoying the same network conditions](https://phabricator.wikimedia.org/phame/live/7/post/109/mobile_web_performance_the_importance_of_the_device/)).
 
-Especially when it comes to big JavaScript bundles, the bandwidth (download) is no longer a bottleneck -- the CPU speed (parsing and executing) is.
+Especially when it comes to big JavaScript bundles, bandwidth (download) is no longer a bottleneck -- CPU speed (parsing and executing) is.
 
 
 # Learn the difference between HTTP/1.1 and HTTP/2
 
-HTTP/2 (a.k.a `h2`, confusingly for HTML writers!) is a major revision of the HTTP protocol that significantly changes how the resources are transferred over the wire, and have completely different performance characteristics than HTTP/1.1. Some **"best practices" or HTTP/1 world (like domain sharding) no longer make sense in HTTP/2**, but equally important is that the **implementations of certain HTTP/2 features, both in various browsers and servers, are wildly different** and often incomplete.
+HTTP/2 (a.k.a `h2`, confusingly for HTML writers!) is a major revision of the HTTP protocol that significantly changes how resources are transferred over the wire, and have completely different performance characteristics to HTTP/1.1. Some **"best practices" for HTTP/1 world (like domain sharding) no longer make sense in HTTP/2**, but equally important is that the **implementations of certain HTTP/2 features, both in various browsers and servers, are wildly different** and often incomplete.
 
 As a first thing, check in your favorite devtools' network panel whether your assets are served over HTTP/1 or HTTP/2 (right click the column list and tick `Protocol` entry to make it appear).
 
@@ -139,7 +139,7 @@ WebPageTest is an extremely powerful tool, and you can read lots of information 
 - gaps of "network silence",
 - the DNS, TCP, TLS requests on critical resources that happen late -- immediate candidates for [`preconnect` or `dns-prefetch`](https://stackoverflow.com/questions/47273743/preconnect-vs-dns-prefetch-resource-hints)
 
-You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually explore the waterfall.
+Understanding the waterfall is essential for doing non-trivial optimizations. You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually dive into the topic with free exploration.
 
 
 # Know your build tool
@@ -171,7 +171,7 @@ It's easy to get lost when learning too many things too fast. Write down the new
 
 # Reach out to the community
 
-Perf community is not big, but if you get stuck, you can often count on good and curious people willing to help on [WebPageTest forum](https://www.webpagetest.org/forums/). Twitter might also be a good source of information that are not always written elsewhere.
+The perf community is not big, but if you get stuck, you can often count on good and curious people willing to help on [WebPageTest forum](https://www.webpagetest.org/forums/). Twitter might also be a good source of information that isn't always written elsewhere.
 
 
 # Keep learning and keep shipping, one thing at a time
