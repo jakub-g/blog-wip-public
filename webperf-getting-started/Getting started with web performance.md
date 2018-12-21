@@ -1,6 +1,6 @@
 # Getting started with web performance in 2019
 
-There are many very good articles out there on how to use new feature X or technique Y or tool Z to improve the performance of your websites. Navigating the labyrinth of modern web performance might be tough though if you're new to the topic. In this article I will try to come up with a guide to getting started your performance journey.
+There are many very good articles out there on how to use new feature X or technique Y or tool Z to improve the performance of your websites. Navigating the labyrinth of modern web performance might be hard though if you're new to the topic. In this article I will try to come up with a guide to getting started your performance journey.
 
 
 # Know your users
@@ -47,7 +47,7 @@ On long-living projects, some cruft might have accumulated over the years that i
 
 # Know your subresources (CSS, JS, images)
 
-The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are.
+The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are. **Creating a flow chart with a diagramming software** might be also useful to better understand the relationships between the dependencies.
 
 If you're unsure about what a given request does, you may **try blocking it or introducing a huge artificial latency** and see how the website behaves (this is also useful for uncovering unexpected single-point-of-failure dependencies). There are countless ways to do it: the _"Request blocking"_ feature of Chrome Dev Tools, the _"AutoResponder"_ (with latency) feature of Fiddler, and _"Block"_ or _"SPOF"_ features of WebPageTest; even an adblocker in any browser will do.
 
