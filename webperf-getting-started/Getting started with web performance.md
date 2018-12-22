@@ -243,4 +243,4 @@ Enjoy your performance journey!
 - [Brotli Compression – How Much Will It Reduce Your Content?](https://paulcalvano.com/index.php/2018/07/25/brotli-compression-how-much-will-it-reduce-your-content/)
 - [Deploying ES2015+ Code in Production Today](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)
 
-_Big thanks to Hine Courtenay for providing numerous fixes to the draft version of this article, and to Doug Sillars for useful tips._
+_Thanks to Hine Courtenay for providing numerous fixes to the draft version of this article, and to Doug Sillars for useful tips._
