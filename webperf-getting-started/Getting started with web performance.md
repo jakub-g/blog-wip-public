@@ -34,6 +34,7 @@ Run your page in several performance tools, to get familiar with them and identi
 - **[Yellow Lab Tools](https://yellowlab.tools/)** can also provide a useful breakdown of various performance metrics.
 - While not strictly performance-focused, also check out **[WebHint](https://webhint.io/scanner/)** and **[RedBot](https://redbot.org/)** which can uncover interoperability and correctness issues of your website, suggest improvements, and help you get rid of useless HTTP headers. 
 - Check also **[SiteSpeed.io](https://www.sitespeed.io/)** for a vast collection of open source webperf tools.
+- Apart from that, there's a number of commercial performance monitoring services, some of which also offer limited free tools.
 
 At this point, you will already know some things that are relatively easy to get fixed (at least in theory), but have high impact: uncompressed assets, unoptimized images etc.
 
@@ -102,12 +103,12 @@ To be able to make sense of real user monitor (RUM) data, you need to learn [the
 
 Certain kinds of optimizations might not be visible in the median numbers, but may do a huge difference in 90th, 95th and 99th percentile. In general, you should probably avoid using averages, as they can be very misleading, and strongly consider using tools that provide [percentile data and bucketed distribution graphs](https://www.dynatrace.com/news/blog/why-averages-suck-and-percentiles-are-great/) instead.
 
-Keep in mind that independent events *are independent*; [you can not just sum the averages or percentiles](https://www.slideshare.net/vividcortex/monitoring-with-percentiles/38) and assume the obtained data will be representative.
+Keep in mind that independent events *are independent*; [you can not just sum the averages or percentiles](https://www.slideshare.net/vividcortex/monitoring-with-percentiles/38) and assume the obtained data will be representative or meaningful.
 
 
 # Be mindful with analytics
 
-As mentioned at the beginning of this article, analyzing global data set can be misleading. For example, some features on your website might only be available to the logged in users. This might mean that the performance outlook of your landing page for the logged in and not logged user might be very different.
+As mentioned at the beginning of this article, analyzing a global data set can be misleading. For example, some features on your website might only be available to the logged in users. This might mean that the performance outlook of your landing page for the logged in and not logged user might be very different.
 
 **Identify the main criteria that affect performance, and be able to narrow down your analytics view** to compare between the multiple variants (logged in/not logged in, mobile/desktop etc.) 
  
@@ -120,7 +121,7 @@ That's why it's important to use **network and CPU throttling** when testing you
 
 You can enable throttling via devtools in your favorite browser ([Chrome example](https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#throttling)), on an operating system level (perhaps [with a proxy like Fiddler](https://stackoverflow.com/questions/16276669/simulate-network-speeds-using-fiddler)), or when running tests with WebPageTest ("Advanced Settings" panel). Network throttling is also useful in benchmarks to have comparable numbers over time.
 
-If you want to go even further, you can try a variation of [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/).
+If you want to go even further, you can try a variation of [2G Tuesdays](https://code.fb.com/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/), or set up a test WiFi in your office that simulates slow 3G mobile connection.
 
 
 # Distinguish latency, bandwidth and CPU
