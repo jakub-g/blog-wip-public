@@ -166,7 +166,7 @@ Shipping huge amounts JavaScript code to the client is one of the most important
 
 - Use the [coverage tab in Chrome dev tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) to find unused JavaScript and CSS.
 - Review libraries you use and look for smaller alternatives. [Bundlephobia](https://bundlephobia.com/scan-results?packages=moment@2.23.0,date-fns@1.30.1) is great for comparing npm artifacts.
-- Make sure to not import big libraries to just use a few small functions they offer. In fact, [you might not need](https://youmightnotneed.com/) certain libraries at all; modern JavaScript is quite capable.
+- Make sure to not import big libraries to just use a few small functions they offer. In fact, [you might not need](https://youmightnotneed.com/) certain libraries at all; modern JavaScript is quite capable, and [selective polyfilling easier than ever](https://polyfill.io/v2/docs/).
 - Updating dependencies might also reduce your bundle size (or quite the contrary -- be careful with that), sometimes indirectly - by avoiding duplicated transitive subdependencies in the project.
 
 
