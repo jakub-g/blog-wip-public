@@ -15,7 +15,7 @@ You're very likely already using analytics tools that can answer those questions
 
 _Note that global stats are often different than local ones_: in particular, in countries with high data costs, proxying browsers like UC Browser, Opera Mini etc. are very popular, while almost unused elsewhere.
 
-To get a glimpse of what is the real browsing experience of your users, and how your website compares with competitors, you may want to check [Chrome UX report](https://dev.to/rick_viscomi/a-step-by-step-guide-to-monitoring-the-competition-with-the-chrome-ux-report-4k1o). 
+To get a glimpse of what is the real browsing experience of your users, **and how your website compares with competitors**, you may want to check [Chrome UX report](https://dev.to/rick_viscomi/a-step-by-step-guide-to-monitoring-the-competition-with-the-chrome-ux-report-4k1o). 
 
 # Identify test URLs
 
