@@ -1,4 +1,4 @@
-# Getting started with web performance in 2019
+# Getting started with web performance: 2019 beginner's guide
 
 There are many very good articles out there on how to use new feature X or technique Y or tool Z to improve the performance of your websites. Navigating the labyrinth of modern web performance might be hard though if you're new to the topic. In this article I will try to come up with a guide to getting started your performance journey.
 
@@ -20,7 +20,7 @@ _Note that global stats are often different than local ones_: in particular, in 
 
 Come up with a few URLs that will be representative candidates for performance analysis and optimization. You probably want some URLs that receive a **high amount of traffic**, have **relatively stable content** over time, and give a good **approximation of various features** of your website.
 
-Your landing page is a natural first candidate. For a newspaper, a popular past article would be another candidate.
+Your landing page is a natural first candidate. For a blog or a newspaper, a popular past article would be another candidate.
 
 For example, Wikimedia's performance team uses "Barack Obama" and "Sweden" articles from English Wikipedia in their benchmarks and performance monitoring.
 
@@ -30,32 +30,30 @@ For example, Wikimedia's performance team uses "Barack Obama" and "Sweden" artic
 Run your page in several performance tools, to get familiar with them and identify some "quick wins". Different tools might provide insights that others are missing, or might explain something better than others – so it's worth trying them all to see which ones are most useful for your particular use cases.
 
 - **Lighthouse** is probably the easiest to get started with, and provides lots of details relevant for modern JS-heavy web applications: run the audit locally via "Audits" tab in Chrome Dev Tools, or from any browser [via a webapp](https://developers.google.com/web/tools/lighthouse/run) or [via WPT](https://www.webpagetest.org/lighthouse).
-- **[WebPageTest](https://www.webpagetest.org/)** is the "Swiss Army knife" of web performance, very powerful and with many "hidden features" for advanced users. The more you dive into webperf, the more you will be using it. [Using WebPageTest](http://shop.oreilly.com/product/0636920033592.do) book is a great reference.
+- **[WebPageTest](https://www.webpagetest.org/)** is the "Swiss Army knife" of web performance, very powerful and with many "hidden features" for advanced users. The more you dive into webperf, the more you will be using it. [Filmstrip and video comparison views](https://www.webpagetest.org/video/view.php?id=160913_04096a0756f3acae68d94e3f273c59aebb13d10a&data=1) are some of its killer features. [Using WebPageTest](http://shop.oreilly.com/product/0636920033592.do) book is a great reference.
 - **[Yellow Lab Tools](https://yellowlab.tools/)** can also provide a useful breakdown of various performance metrics.
 - While not strictly performance-focused, also check out **[WebHint](https://webhint.io/scanner/)** and **[RedBot](https://redbot.org/)** which can uncover interoperability and correctness issues of your website, suggest improvements, and help you get rid of useless HTTP headers. 
 - Check also **[SiteSpeed.io](https://www.sitespeed.io/)** for a vast collection of open source webperf tools.
 
-At this point, you will already know some things that are relatively easy to get fixed (at least in theory), but have high impact: uncompressed assets, unoptimized images etc. 
+At this point, you will already know some things that are relatively easy to get fixed (at least in theory), but have high impact: uncompressed assets, unoptimized images etc.
 
 
 # Know your HTML
 
-Get your website's HTML output (`Ctrl-U` in Firefox and Chrome, for example), unminify, and analyze it. **Create a high level documentation of what makes it into your HTML, why it's there** (ask your teammates if you don't know), and how many bytes it takes.
+Get your website's HTML output (`Ctrl-U` in Firefox and Chrome, for example), [unminify](https://beautifier.io/), and analyze it. **Create a high level documentation of what makes it into your HTML, why it's there** (ask your teammates if you don't know), and how many bytes it takes.
 
 On long-living projects, some cruft might have accumulated over the years that is no longer really needed, and can be safely removed. (Bonus points if it's third-party JavaScript!)
 
 
-# Know your subresources (CSS, JS, images)
+# Know your subresources
 
-The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are. **Creating a flow chart with a diagramming software** might be also useful to better understand the relationships between the dependencies.
+The next thing to understand your website is to know what HTTP requests a page load triggers, when, and why. It might be helpful to run a WebPageTest test, copy [the list of all the requests (at the bottom)](https://www.webpagetest.org/result/181216_GB_9b0d2e1a261ee5401dfd19842cb74570/1/details/#waterfall_view_step1) to a spreadsheet, and analyze the role of each them (particularly the first 10-20 on the list), and how critical they are. **Creating a flow chart with diagramming software** might be also useful to better understand the relationships between the dependencies.
 
 If you're unsure about what a given request does, you may **try blocking it or introducing a huge artificial latency** and see how the website behaves (this is also useful for uncovering unexpected single-point-of-failure dependencies). There are countless ways to do it: the _"Request blocking"_ feature of Chrome Dev Tools, the _"AutoResponder"_ (with latency) feature of Fiddler, and _"Block"_ or _"SPOF"_ features of WebPageTest; even an adblocker in any browser will do.
 
 By knowing which requests are critical for user experience, and which are secondary, you can better prioritize your optimization work. If possible, [load your scripts asynchronously](https://speedcurve.com/blog/load-scripts-async/) or [using `defer`](https://gist.github.com/jakub-g/385ee6b41085303a53ad92c7c8afd7a6)
 
-[RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that visualizes 3rd-party requests coming from your webapp, and can help uncover long chains of requests that are often bad for performance of the site.
-
-[Coverage tab in Chrome dev tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) can help you find unused JavaScript and CSS.
+[RequestMap](http://requestmap.webperf.tools/render/181216_GB_9b0d2e1a261ee5401dfd19842cb74570) is a tool that can be useful for [auditing 3rd-party requests](https://csswizardry.com/2018/05/identifying-auditing-discussing-third-parties/) coming from your webapp, and can help uncover long chains of requests that are often bad for performance of the site. 
 
 
 # Have a way to isolate features
@@ -160,11 +158,34 @@ WebPageTest is an extremely powerful tool, and you can read lots of information 
 Understanding the waterfall is essential for doing non-trivial optimizations. You can start with this [presentation on waterfall anti-patterns](https://www.slideshare.net/jrvis/gdl-waterfall-anti-patterns) and gradually dive into the topic with free exploration.
 
 
+# Keep JavaScript at bay
+
+Shipping huge amounts JavaScript code to the client is one of the most important problems of the modern web.
+[Evaluating JavaScript is very expensive](https://medium.com/@addyosmani/the-cost-of-javascript-in-2018-7d8950fbb5d4) - much more than rendering an image of comparable size. It's not always easy to do much about it when you're confronted with a large existing project. Having said that, here are a few little tricks:
+
+- Use the [coverage tab in Chrome dev tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) to find unused JavaScript and CSS.
+- Review libraries you use and look for smaller alternatives. [Bundlephobia](https://bundlephobia.com/scan-results?packages=moment@2.23.0,date-fns@1.30.1) is great for comparing npm artifacts.
+- Make sure to not import big libraries to just use a few small functions they offer. In fact, [you might not need](https://youmightnotneed.com/) certain libraries at all; modern JavaScript is quite capable.
+- Updating dependencies might also reduce your bundle size (or quite the contrary -- be careful with that), sometimes indirectly - by avoiding duplicated transitive subdependencies in the project.
+
+
 # Know your build tools
 
-Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards. In particular, [**code splitting**](https://webpack.js.org/guides/code-splitting/) is a critical technique if you ship big amounts of JavaScript.
+Bundlers like webpack have quite a few configuration options that can help with improving performance. Reading through the docs and perfecting your config might take a while, but it's a good investment with potentially high rewards. In particular, **[code splitting](https://webpack.js.org/guides/code-splitting/) is a critical technique to minimize your initial JavaScript payload** and keep your pages responsive while loading.
 
 If you're using babel to transpile ES2015+ code, make sure to use and properly configure [babel-preset-env](http://2ality.com/2017/02/babel-preset-env.html) according to your browser support level, to avoid unnecessary transpilation and polyfills in your final bundles.
+
+[Updating your dependencies to the newer ES2015+based versions](https://twitter.com/addyosmani/status/1047010157564190720) can make your bundles smaller, thanks to the [tree-shaking](https://webpack.js.org/guides/tree-shaking/) (dead code elimination) features of the bundlers.
+
+
+# Take long-term caching into account
+
+The "common knowledge" of HTTP/1 world was to merge all JavaScript needed on a given page as a single file. If you deploy the page once and never change it again, this makes sense. But **if you deploy updates regularly, and some of your modules change more often than the others**, it might be useful to split them as separate bundles, _even if they are always used together._
+
+When using HTTP/2 and staying reasonable with the number of bundles, a tiny first-time latency of multiple downloads is a small price to pay for the increased cache hit probability (hence avoiding expensive network fetches) for the returning visitors.
+
+
+The just-released (as alpha) [webpack 5](https://github.com/webpack/changelog-v5/blob/master/README.md) promises to make out-of-the-box long-term caching a core feature.
 
 
 # Use developer versions of web browsers
@@ -211,3 +232,15 @@ No one have found yet a performance silver bullet. Learn new things, come up wit
 
 Enjoy your performance journey!
 
+
+# Bonus resources
+
+- [High Performance Browser Networking by Ilya Grigorik](https://hpbn.co/) is a wonderful book if you want to understand how internet protocols and web browsers work.
+- Check also [High Performance Networking in Google Chrome](https://www.igvita.com/posa/high-performance-networking-in-google-chrome/) blog article.
+
+# For the brave performance warriors
+
+- [Brotli Compression – How Much Will It Reduce Your Content?](https://paulcalvano.com/index.php/2018/07/25/brotli-compression-how-much-will-it-reduce-your-content/)
+- [Deploying ES2015+ Code in Production Today](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)
+
+_Big thanks to Hine Courtenay for providing numerous fixes to the draft version of this article, and to Doug Sillars for useful tips._
