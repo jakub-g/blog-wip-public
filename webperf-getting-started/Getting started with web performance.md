@@ -184,8 +184,7 @@ The "common knowledge" of HTTP/1 world was to merge all JavaScript needed on a g
 
 When using HTTP/2 and staying reasonable with the number of bundles, a tiny first-time latency of multiple downloads is a small price to pay for the increased cache hit probability (hence avoiding expensive network fetches) for the returning visitors.
 
-
-The just-released (as alpha) [webpack 5](https://github.com/webpack/changelog-v5/blob/master/README.md) promises to make out-of-the-box long-term caching a core feature.
+Getting long-term caching right requires reproducible builds, which has been known to be hard with older versions of webpack, and [even with webpack 4](https://github.com/webpack/webpack/issues/7179#issuecomment-449563879). The just-released (in alpha) [webpack 5](https://github.com/webpack/changelog-v5/blob/master/README.md) promises to make out-of-the-box long-term caching a core feature, which is very good news.
 
 
 # Use developer versions of web browsers
