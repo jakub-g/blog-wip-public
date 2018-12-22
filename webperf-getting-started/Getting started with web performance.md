@@ -197,7 +197,7 @@ Pre-release versions of Firefox (Beta/Dev Edition/Nightly), Chrome (Beta/Dev/Can
 
 Improving on one metric sometimes means worsening on another; improving things for browser X can yield regressions in browser Y.
 
-Think about it upfront, test regularly all major browser engines, and make sure the keep the balance right. **Create views or filters in your analytics tool to be able to quickly isolate stats from different browsers**, different countries etc. When deploying major changes, make sure to check each view separately.
+Think about it upfront, test regularly all major browser engines, and make sure to keep the balance right. **Create views or filters in your analytics tool to be able to quickly isolate stats from different browsers**, different countries etc. When deploying major changes, make sure to check each view separately.
 
 
 # Trust but verify
@@ -212,6 +212,13 @@ Another example: `<script type="module">` / `<script nomodule>` is a promising p
 # Remember that one size does not fit all
 
 What is good for users on high bandwidth network -- for example, prefetching -- is not always good for users with limited data plans or low bandwidth (developing countries, users on data roaming). [Networking Information API, Client Hints, dynamic request rewriting through a service worker](https://calendar.perfplanet.com/2018/dynamic-resources-browser-network-device-memory/) might be useful to mitigate some of those concerns.
+
+
+# Performance is a moving target
+
+Your website does not live in isolation. The browsers are updated and get faster ([but sometimes slower, by accident](https://phabricator.wikimedia.org/phame/live/7/post/117/performance_testing_in_a_controlled_lab_environment_-_the_metrics/)), the users replace their devices, the mobile and landline networks are upgraded -- keep that in mind when analyzing long term performance KPIs.
+
+The demographics of your website can also change as it gets popular in new countries, and in extreme case, [your global metrics might worsen when you ship a real massive improvement!](http://blog.chriszacharias.com/page-weight-matters)
 
 
 # Write down what you learn
@@ -237,9 +244,6 @@ Enjoy your performance journey!
 
 - [High Performance Browser Networking by Ilya Grigorik](https://hpbn.co/) is a wonderful book if you want to understand how internet protocols and web browsers work.
 - Check also [High Performance Networking in Google Chrome](https://www.igvita.com/posa/high-performance-networking-in-google-chrome/) blog article.
-
-# For the brave performance warriors
-
 - [Brotli Compression – How Much Will It Reduce Your Content?](https://paulcalvano.com/index.php/2018/07/25/brotli-compression-how-much-will-it-reduce-your-content/)
 - [Deploying ES2015+ Code in Production Today](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)
 
